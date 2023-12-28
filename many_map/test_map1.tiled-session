@@ -1,0 +1,56 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "test_map2.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "Все файлы (*)",
+    "fileStates": {
+        "D:/maps/Коллаж.tsx": {
+            "scaleInDock": 1
+        },
+        "test_map1.tmx": {
+            "scale": 0.285,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 1496.4912280701756,
+                "y": 1496.4912280701756
+            }
+        },
+        "test_map2.tmx": {
+            "scale": 0.285,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 1501.7543859649124,
+                "y": 1501.7543859649124
+            }
+        },
+        "Коллаж.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "D:/Python/many_map",
+    "map.height": 30,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 100,
+    "map.tileWidth": 100,
+    "openFiles": [
+        "test_map1.tmx",
+        "Коллаж.tsx",
+        "test_map2.tmx"
+    ],
+    "project": "test_map1.tiled-project",
+    "recentFiles": [
+        "test_map1.tmx",
+        "Коллаж.tsx",
+        "test_map2.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 100,
+        "width": 100
+    }
+}
