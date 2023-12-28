@@ -10,7 +10,7 @@ screen = pygame.display.set_mode((1200, 800))
 clock = pygame.time.Clock()
 fps = 60
 pygame.event.set_grab(True)
-tmx_data = pytmx.load_pygame(r'many_map/test_map2.tmx')
+tmx_data = pytmx.load_pygame(r'many_map/test_map1.tmx')
 
 
 def load_image(name, colorkey=None):
