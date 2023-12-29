@@ -13,19 +13,19 @@
             "scaleInDock": 1
         },
         "test_map1.tmx": {
-            "scale": 0.285,
-            "selectedLayer": 0,
+            "scale": 0.25,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 1491.2280701754387,
-                "y": 1491.2280701754387
+                "x": 1628,
+                "y": 1596
             }
         },
         "test_map2.tmx": {
             "scale": 0.285,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 1498.2456140350878,
-                "y": 1496.4912280701756
+                "x": 1333.3333333333335,
+                "y": 1410.5263157894738
             }
         },
         "Коллаж.tsx": {
@@ -44,6 +44,7 @@
         "test_map2.tmx"
     ],
     "project": "test_map1.tiled-project",
+    "property.type": "int",
     "recentFiles": [
         "test_map2.tmx",
         "Коллаж.tsx",

@@ -11,6 +11,7 @@ clock = pygame.time.Clock()
 fps = 60
 pygame.event.set_grab(True)
 tmx_data = pytmx.load_pygame(r'many_map/test_map1.tmx')
+select_icon = 0
 
 
 def load_image(name, colorkey=None):
@@ -65,34 +66,60 @@ class Camera:
 
         # Проверка, достигла ли мышь границ экрана для перемещения карты
         if (
-            mouse_x < self.screen_width * 0.05
-            and self.camera_x > 0
+                mouse_x < self.screen_width * 0.05
+                and self.camera_x > 0
         ):
             self.camera_x -= 5
         elif (
-            mouse_x > self.screen_width * 0.95
-            and self.camera_x < self.map_width - self.screen_width
+                mouse_x > self.screen_width * 0.95
+                and self.camera_x < self.map_width - self.screen_width
         ):
             self.camera_x += 5
 
         if (
-            mouse_y < self.screen_height * 0.05
-            and self.camera_y > 0
+                mouse_y < self.screen_height * 0.05
+                and self.camera_y > 0
         ):
             self.camera_y -= 5
         elif (
-            mouse_y > self.screen_height * 0.95
-            and self.camera_y < self.map_height - self.screen_height
+                mouse_y > self.screen_height * 0.95
+                and self.camera_y < self.map_height - self.screen_height
         ):
             self.camera_y += 5
 
 
+class PlayerIcon(pygame.sprite.Sprite):
+    images = {0: load_image('Иконка 1.jpg'), 1: load_image('Иконка 2.jpg'), 2: load_image('Иконка 3.jpg')}
+
+    def __init__(self, position, player_number, *group):
+        super().__init__(*group)
+        self.image = PlayerIcon.images[player_number]
+        self.rect = self.image.get_rect(topleft=position)
+        self.numb = player_number
+
+    def draw(self):
+        if self.numb == select_icon:
+            rect = self.rect[0] - 10, self.rect[1] - 10, self.rect[2] + 20, self.rect[3] + 20
+            pygame.draw.rect(screen, 'red', rect, 10)
+
+    def update(self, *args):
+        for ev in args:
+            if ev and ev.type == pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(ev.pos):
+                global select_icon
+                select_icon = self.numb
+
+
 def main():
     all_sprites = pygame.sprite.Group()
-    cursor = MyCursor(all_sprites)
-    camera = Camera(screen.get_width(), screen.get_height(), tmx_data.width * tmx_data.tilewidth, tmx_data.height * tmx_data.tileheight)
+    camera = Camera(screen.get_width(), screen.get_height(), tmx_data.width * tmx_data.tilewidth,
+                    tmx_data.height * tmx_data.tileheight)
+    player_icons = pygame.sprite.Group()
+    player_icon_positions = [(10, height - 110), (120, height - 110), (230, height - 110)]
 
-    event_mousemotion = None
+    player_icon = [PlayerIcon(position, i, all_sprites, player_icons) for i, position in
+                   enumerate(player_icon_positions)]
+    cursor = MyCursor(all_sprites)
+    event_mousemotion = event_mousedown = None
     pygame.mouse.set_visible(False)
     game_running = True
     while game_running:
@@ -105,18 +132,35 @@ def main():
                     game_running = False
             if event.type == pygame.MOUSEMOTION:
                 event_mousemotion = event
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                event_mousedown = event
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                # Получение координат мыши
+                tile_size = 100
+                mouse_x, mouse_y = pygame.mouse.get_pos()
 
+                # Нахождение координат клетки карты
+                tile_x = (mouse_x + camera.camera_x) // tile_size
+                tile_y = (mouse_y + camera.camera_y) // tile_size
+
+                print("Координаты клетки карты:", tile_x, tile_y)
+
+        for icon in player_icons:
+            icon.draw()
         for layer in tmx_data.visible_layers:
             if isinstance(layer, pytmx.TiledTileLayer):
                 for x, y, gid in layer:
                     tile = tmx_data.get_tile_image_by_gid(gid)
                     if tile:
-                        screen.blit(tile, (x * tmx_data.tilewidth - camera.camera_x, y * tmx_data.tileheight - camera.camera_y))
+                        screen.blit(tile, (
+                            x * tmx_data.tilewidth - camera.camera_x, y * tmx_data.tileheight - camera.camera_y))
 
         if event_mousemotion:
             camera.update_camera()
         cursor.draw(screen)
-        all_sprites.update(event_mousemotion)
+        for icon in player_icon:
+            icon.draw()
+        all_sprites.update(event_mousemotion, event_mousedown)
         all_sprites.draw(screen)
 
         clock.tick(fps)
