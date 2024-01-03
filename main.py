@@ -5,8 +5,10 @@ import os
 
 pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
-width, height = 1200, 800
-screen = pygame.display.set_mode((1200, 800))
+# width, height = 1200, 800
+info = pygame.display.Info()
+width, height = info.current_w, info.current_h
+screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 fps = 60
 pygame.event.set_grab(True)
