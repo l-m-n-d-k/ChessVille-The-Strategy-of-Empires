@@ -7,7 +7,10 @@ pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
 info = pygame.display.Info()
 width, height = info.current_w, info.current_h
-screen = pygame.display.set_mode((width, height))
+print(width, height)
+screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
+width, height = screen.get_width(), screen.get_height()
+print(width, height)
 """info = pygame.display.Info()
 width, height = info.current_w, info.current_h
 screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)"""
