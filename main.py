@@ -2,18 +2,16 @@ import sys
 import pygame
 import os
 import csv
+from copy import deepcopy
 
 pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
+
 info = pygame.display.Info()
 width, height = info.current_w, info.current_h
-print(width, height)
 screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)
 width, height = screen.get_width(), screen.get_height()
-print(width, height)
-"""info = pygame.display.Info()
-width, height = info.current_w, info.current_h
-screen = pygame.display.set_mode((width, height), pygame.FULLSCREEN)"""
+
 all_sprites = pygame.sprite.Group()
 tiles_group = pygame.sprite.Group()
 players_group1 = pygame.sprite.Group()
@@ -30,7 +28,8 @@ pygame.event.set_grab(True)
 
 select_icon = 0
 tile_width = tile_height = 100
-HOD = 'first'
+map_width = map_height = 30
+HOD = None
 
 
 def load_image(name, directory='Фото персонажей', colorkey=None):
@@ -50,8 +49,8 @@ def load_image(name, directory='Фото персонажей', colorkey=None):
 
 
 images = {
-    1: load_image('Герой.jpg', colorkey=-1),
-    2: load_image('Разведчик.jpg', colorkey=-1),
+    1: load_image('Разведчик.jpg', colorkey=-1),
+    2: load_image('Герой.jpg', colorkey=-1),
     3: load_image('Разведчик.jpg', colorkey=-1),
     4: load_image('Разведчик.jpg', colorkey=-1),
     5: load_image('Герой.jpg', colorkey=-1),
@@ -84,13 +83,128 @@ class Players1(pygame.sprite.Sprite):
         self.image = images[tile_type]
         self.pos = pos_x, pos_y
         self._define_rect()
+        self.tip = tile_type
+        self.steps = 0
+        self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
 
     def _define_rect(self):
         self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])
 
-    def move(self, pos_x, pos_y):
+    def move(self, pos_x, pos_y, mapa):
         self.pos = pos_x, pos_y
         self._define_rect()
+        self.update_board(mapa)
+
+    def update_steps(self):
+        if self.tip in (2, 5):
+            self.steps = 6
+        elif self.tip in (1, 3, 4, 6):
+            self.steps = 4
+
+    def update_board(self, mapa):
+        board = [[[None, '', '', '']] * map_width for _ in range(map_height)]
+        for y in range(map_height):
+            for x in range(map_width):
+                if mapa.fon[y][x] == 9:
+                    board[y][x] = [None, "Поле"]
+                elif mapa.fon[y][x] == 10:
+                    board[y][x] = [None, "Гора"]
+                elif mapa.fon[y][x] == 7:
+                    board[y][x] = [None, "Холм"]
+                elif mapa.fon[y][x] == 8:
+                    board[y][x] = [None, "Река"]
+
+                if mapa.neytral[y][x] in (12, 13):
+                    board[y][x].append('Нейтрал')
+                elif mapa.players[y][x] in (4, 5, 6):
+                    board[y][x].append('Вражеский герой')
+                elif mapa.players[y][x] in (1, 2, 3):
+                    board[y][x].append('Союзный герой')
+                elif mapa.players[y][x] == 0:
+                    board[y][x].append('Пусто')
+
+                if mapa.tyman1[y][x] == 11:
+                    board[y][x].append('Туман')
+                elif mapa.tyman1[y][x] == 0:
+                    board[y][x].append('Тумана нет')
+
+        board[self.pos[1]][self.pos[0]] = [0, 'Моя позция', 'Я', 'Тумана нет']
+
+        steps = {'Поле': 1,
+                 'Холм': 2,
+                 'Река': 2,
+                 'Моя позция': 0,
+                 'Нейтрал': 2,
+                 'Вражеский герой': 2,
+                 'Пусто': 0,
+                 'Я': 0}
+
+        c = True
+        while c:
+            c = 0
+            board_copy = deepcopy(board)
+            for y in range(map_height):
+                for x in range(map_width):
+                    ceil1 = board[y][x]
+                    if abs(self.pos[1] - y) <= 10 and abs(self.pos[0] - x) <= 10 and ceil1[0] is None and ceil1[
+                        1] != 'Гора' and ceil1[2] not in ('Я', 'Союзный герой') and ceil1[3] != 'Туман':
+                        lst_sosedey = []
+                        for dy in range(-1, 1 + 1):
+                            for dx in range(-1, 1 + 1):
+                                if x + dx < 0 or y + dy < 0:
+                                    continue
+                                if x + dx >= map_width or y + dy >= map_height:
+                                    continue
+                                if dx == 0 and dy == 0:
+                                    continue
+
+                                ceil = board[y + dy][x + dx]
+                                if isinstance(ceil[0], int) and ceil[1] != 'Гора' and ceil1[2] != 'Союзный герой' and \
+                                        ceil[3] != 'Туман':
+                                    lst_sosedey.append(ceil)
+
+                        if lst_sosedey:
+                            optional_ceil = min(lst_sosedey, key=lambda i: i[0] + steps[i[1]] + steps[i[2]])
+                            board_copy[y][x] = [optional_ceil[0] + steps[ceil1[1]] + steps[ceil1[2]], *ceil1[1:]]
+                            c += 1
+                        else:
+                            pass
+            board = deepcopy(board_copy)
+
+        c = True
+        while c:
+            c = 0
+            board_copy = deepcopy(board)
+            for y in range(map_height):
+                for x in range(map_width):
+                    ceil1 = board[y][x]
+                    if ceil1[0]:
+                        lst_sosedey = []
+                        for dy in range(-1, 1 + 1):
+                            for dx in range(-1, 1 + 1):
+                                if x + dx < 0 or y + dy < 0:
+                                    continue
+                                if x + dx >= map_width or y + dy >= map_height:
+                                    continue
+                                if dx == 0 and dy == 0:
+                                    continue
+
+                                ceil = board[y + dy][x + dx]
+                                if isinstance(ceil[0], int) and ceil[1] != 'Гора' and ceil1[2] != 'Союзный герой' and \
+                                        ceil[3] != 'Туман':
+                                    lst_sosedey.append(ceil)
+
+                        if lst_sosedey:
+                            optional_ceil = min(lst_sosedey, key=lambda i: i[0] + steps[i[1]] + steps[i[2]])
+                            numb = optional_ceil[0] + steps[ceil1[1]] + steps[ceil1[2]]
+                            if numb != ceil1[0]:
+                                board_copy[y][x] = [numb, *ceil1[1:]]
+                                c += 1
+                        else:
+                            pass
+            board = deepcopy(board_copy)
+
+        self.board = deepcopy(board)
 
 
 class Players2(pygame.sprite.Sprite):
@@ -99,13 +213,127 @@ class Players2(pygame.sprite.Sprite):
         self.image = images[tile_type]
         self.pos = pos_x, pos_y
         self._define_rect()
+        self.tip = tile_type
+        self.steps = 0
+        self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
 
     def _define_rect(self):
         self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])
 
-    def move(self, pos_x, pos_y):
+    def move(self, pos_x, pos_y, mapa):
         self.pos = pos_x, pos_y
         self._define_rect()
+        self.update_board(mapa)
+
+    def update_steps(self):
+        if self.tip in (2, 5):
+            self.steps = 6
+        elif self.tip in (1, 3, 4, 6):
+            self.steps = 4
+
+    def update_board(self, mapa):
+        board = [[[None, '', '', '', '']] * map_width for _ in range(map_height)]
+        for y in range(map_height):
+            for x in range(map_width):
+                if mapa.fon[y][x] == 9:
+                    board[y][x] = [None, "Поле"]
+                elif mapa.fon[y][x] == 10:
+                    board[y][x] = [None, "Гора"]
+                elif mapa.fon[y][x] == 7:
+                    board[y][x] = [None, "Холм"]
+                elif mapa.fon[y][x] == 8:
+                    board[y][x] = [None, "Река"]
+
+                if mapa.neytral[y][x] in (12, 13):
+                    board[y][x].append('Нейтрал')
+                elif mapa.players[y][x] in (1, 2, 3):
+                    board[y][x].append('Вражеский герой')
+                elif mapa.players[y][x] in (4, 5, 6):
+                    board[y][x].append('Союзный герой')
+                elif mapa.players[y][x] == 0:
+                    board[y][x].append('Пусто')
+
+                if mapa.tyman2[y][x] == 11:
+                    board[y][x].append('Туман')
+                elif mapa.tyman2[y][x] == 0:
+                    board[y][x].append('Тумана нет')
+
+        board[self.pos[1]][self.pos[0]] = [0, 'Моя позция', 'Я', 'Тумана нет']
+
+        steps = {'Поле': 1,
+                 'Холм': 2,
+                 'Река': 2,
+                 'Моя позция': 0,
+                 'Нейтрал': 2,
+                 'Вражеский герой': 2,
+                 'Пусто': 0,
+                 'Я': 0}
+
+        c = True
+        while c:
+            c = 0
+            board_copy = deepcopy(board)
+            for y in range(map_height):
+                for x in range(map_width):
+                    ceil1 = board[y][x]
+                    if abs(self.pos[1] - y) <= 10 and abs(self.pos[0] - x) <= 10 and ceil1[0] is None and ceil1[
+                        1] != 'Гора' and ceil1[2] not in ('Я', 'Союзный герой') and ceil1[3] != 'Туман':
+                        lst_sosedey = []
+                        for dy in range(-1, 1 + 1):
+                            for dx in range(-1, 1 + 1):
+                                if x + dx < 0 or y + dy < 0:
+                                    continue
+                                if x + dx >= map_width or y + dy >= map_height:
+                                    continue
+                                if dx == 0 and dy == 0:
+                                    continue
+
+                                ceil = board[y + dy][x + dx]
+                                if isinstance(ceil[0], int) and ceil[1] != 'Гора' and ceil1[2] != 'Союзный герой' and \
+                                        ceil[3] != 'Туман':
+                                    lst_sosedey.append(ceil)
+
+                        if lst_sosedey:
+                            optional_ceil = min(lst_sosedey, key=lambda i: i[0] + steps[i[1]] + steps[i[2]])
+                            board_copy[y][x] = [optional_ceil[0] + steps[ceil1[1]] + steps[ceil1[2]], *ceil1[1:]]
+                            c += 1
+                        else:
+                            pass
+            board = deepcopy(board_copy)
+
+        c = True
+        while c:
+            c = 0
+            board_copy = deepcopy(board)
+            for y in range(map_height):
+                for x in range(map_width):
+                    ceil1 = board[y][x]
+                    if ceil1[0]:
+                        lst_sosedey = []
+                        for dy in range(-1, 1 + 1):
+                            for dx in range(-1, 1 + 1):
+                                if x + dx < 0 or y + dy < 0:
+                                    continue
+                                if x + dx >= map_width or y + dy >= map_height:
+                                    continue
+                                if dx == 0 and dy == 0:
+                                    continue
+
+                                ceil = board[y + dy][x + dx]
+                                if isinstance(ceil[0], int) and ceil[1] != 'Гора' and ceil1[2] != 'Союзный герой' and \
+                                        ceil[3] != 'Туман':
+                                    lst_sosedey.append(ceil)
+
+                        if lst_sosedey:
+                            optional_ceil = min(lst_sosedey, key=lambda i: i[0] + steps[i[1]] + steps[i[2]])
+                            numb = optional_ceil[0] + steps[ceil1[1]] + steps[ceil1[2]]
+                            if numb != ceil1[0]:
+                                board_copy[y][x] = [numb, *ceil1[1:]]
+                                c += 1
+                        else:
+                            pass
+            board = deepcopy(board_copy)
+        self.board = deepcopy(board)
 
 
 class Neytral(pygame.sprite.Sprite):
@@ -175,14 +403,16 @@ class Map:
         if HOD == 'first':
             tiles_group.draw(screen)
             players_group1.draw(screen)
+            players_group2.draw(screen)
             neytral_group.draw(screen)
             tyman_group1.draw(screen)
             system_group.draw(screen)
         elif HOD == 'second':
             tiles_group.draw(screen)
+            players_group1.draw(screen)
             players_group2.draw(screen)
             neytral_group.draw(screen)
-            tyman_group1.draw(screen)
+            tyman_group2.draw(screen)
             system_group.draw(screen)
 
 
@@ -224,37 +454,43 @@ class Camera:
                 mouse_x < self.screen_width * 0.05
                 and self.camera_x > 0
         ):
-            self.camera_x -= 5
+            self.camera_x -= 8
         elif (
                 mouse_x > self.screen_width * 0.95
                 and self.camera_x < self.map_width - self.screen_width
         ):
-            self.camera_x += 5
+            self.camera_x += 8
 
         if (
                 mouse_y < self.screen_height * 0.05
                 and self.camera_y > 0
         ):
-            self.camera_y -= 5
+            self.camera_y -= 8
         elif (
                 mouse_y > self.screen_height * 0.95
                 and self.camera_y < self.map_height - self.screen_height
         ):
-            self.camera_y += 5
+            self.camera_y += 8
 
     def update_targets(self):
         for sprite in tiles_group:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x, tile_height * sprite.pos[1] - self.camera_y)
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+                                                       tile_height * sprite.pos[1] - self.camera_y)
         for sprite in players_group1:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x, tile_height * sprite.pos[1] - self.camera_y)
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+                                                       tile_height * sprite.pos[1] - self.camera_y)
         for sprite in players_group2:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x, tile_height * sprite.pos[1] - self.camera_y)
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+                                                       tile_height * sprite.pos[1] - self.camera_y)
         for sprite in neytral_group:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x, tile_height * sprite.pos[1] - self.camera_y)
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+                                                       tile_height * sprite.pos[1] - self.camera_y)
         for sprite in tyman_group1:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x, tile_height * sprite.pos[1] - self.camera_y)
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+                                                       tile_height * sprite.pos[1] - self.camera_y)
         for sprite in tyman_group2:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x, tile_height * sprite.pos[1] - self.camera_y)
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+                                                       tile_height * sprite.pos[1] - self.camera_y)
 
 
 class PlayerIcon(pygame.sprite.Sprite):
@@ -278,14 +514,89 @@ class PlayerIcon(pygame.sprite.Sprite):
                 select_icon = self.numb
 
 
+def new_hod(player):
+    global HOD
+    if player == 'first':
+        HOD = 'first'
+        for sprite in players_group1:
+            sprite.update_steps()
+    elif player == 'second':
+        HOD = 'second'
+        for sprite in players_group2:
+            sprite.update_steps()
+
+
+def move(player, hero, pos_x, pos_y, mapa):
+    my_hero = None
+    if player == 'first':
+        for sprite in players_group1:
+            if sprite.tip == hero + 1:
+                my_hero = sprite
+        if not isinstance(my_hero.board[pos_y][pos_x][0], int):
+            return  # звук "сюда нельзя пойти"
+        elif my_hero.board[pos_y][pos_x][0] > my_hero.steps:
+            return  # звук "слишком далеко"
+        elif my_hero.board[pos_y][pos_x][2] in ['Нейтрал', 'Вражеский герой']:
+            ok = ...  # Окошко вопрос pyqt хочет ли игрок пройти войной
+            if ok:
+                chess_boy()
+            else:
+                return
+        else:
+            mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0
+            mapa.players[pos_y][pos_x] = my_hero.tip
+
+            vision = 4 if my_hero.tip in (1, 3) else 3
+            for sprite in tyman_group1:
+                if abs(sprite.pos[0] - pos_x) <= vision and abs(sprite.pos[1] - pos_y) <= vision:
+                    mapa.tyman1[sprite.pos[1]][sprite.pos[0]] = 0
+                    sprite.kill()
+
+            my_hero.steps -= my_hero.board[pos_y][pos_x][0]
+            my_hero.move(pos_x, pos_y, mapa)
+
+
+    elif player == 'second':
+        for sprite in players_group2:
+            if sprite.tip == hero + 4:
+                my_hero = sprite
+        if not isinstance(my_hero.board[pos_y][pos_x][0], int):
+            return  # звук "сюда нельзя пойти"
+        elif my_hero.board[pos_y][pos_x][0] > my_hero.steps:
+            return  # звук "слишком далеко"
+        elif my_hero.board[pos_y][pos_x][2] in ['Нейтрал', 'Вражеский герой']:
+            ok = ...  # Окошко вопрос pyqt хочет ли игрок пройти войной
+            if ok:
+                chess_boy()
+            else:
+                return
+        else:
+            mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0
+            mapa.players[pos_y][pos_x] = my_hero.tip
+
+            vision = 4 if my_hero.tip in (4, 6) else 3
+            for sprite in tyman_group2:
+                if abs(sprite.pos[0] - pos_x) <= vision and abs(sprite.pos[1] - pos_y) <= vision:
+                    mapa.tyman2[sprite.pos[1]][sprite.pos[0]] = 0
+                    sprite.kill()
+
+            my_hero.steps -= my_hero.board[pos_y][pos_x][0]
+            my_hero.move(pos_x, pos_y, mapa)
+
+
 def main():
-    all_sprites = pygame.sprite.Group()
+    map_game = Map()
+    new_hod('first')
+    for sprite in players_group1:
+        sprite.move(*sprite.pos, map_game)
+    for sprite in players_group2:
+        sprite.move(*sprite.pos, map_game)
+
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
     player_icon_positions = [(10, height - 110), (120, height - 110), (230, height - 110)]
-
     player_icon = [PlayerIcon(position, i) for i, position in enumerate(player_icon_positions)]
+
     MyCursor()
-    map = Map()
     event_mousemotion = event_mousedown = None
     pygame.mouse.set_visible(False)
     game_running = True
@@ -308,13 +619,17 @@ def main():
                 # Нахождение координат клетки карты
                 tile_x = (mouse_x + camera.camera_x) // tile_size
                 tile_y = (mouse_y + camera.camera_y) // tile_size
+
+                move(HOD, select_icon, tile_x, tile_y, map_game)
                 print("Координаты клетки карты:", tile_x, tile_y)
+            if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
+                new_hod('first' if HOD == 'second' else 'second')
 
         camera.update_camera()
         camera.update_targets()
         system_group.update(event_mousemotion, event_mousedown)
         all_sprites.update(event_mousemotion, event_mousedown)
-        map.draw_map(screen)
+        map_game.draw_map(screen)
         for icon in player_icon:
             icon.draw()
 
