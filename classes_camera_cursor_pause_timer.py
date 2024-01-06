@@ -24,7 +24,6 @@ class MyCursor(pygame.sprite.Sprite):
 class Camera:
     def __init__(self, screen_width, screen_height, map_width, map_height):
         self.camera_x = self.camera_y = 0
-        self.target_x = self.target_y = screen_width // 2
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.map_width = map_width
@@ -32,20 +31,21 @@ class Camera:
 
     def update_camera(self):
         mouse_x, mouse_y = pygame.mouse.get_pos()
-
-        # Ограничиваем положение target_x и target_y, чтобы не выходили за границы карты
-        self.target_x = max(self.screen_width // 2, min(self.map_width - self.screen_width // 2, mouse_x))
-        self.target_y = max(self.screen_height // 2, min(self.map_height - self.screen_height // 2, mouse_y))
-
         # Проверка, достигла ли мышь границ экрана для перемещения карты
-        if mouse_x < self.screen_width * 0.05 and self.camera_x > 0:
+        if mouse_x < self.screen_width * 0.03 and self.camera_x > 0:
             self.camera_x -= 10
-        elif mouse_x > self.screen_width * 0.95 and self.camera_x < self.map_width - self.screen_width:
+        elif mouse_x > self.screen_width * 0.98 and self.camera_x < self.map_width - self.screen_width:
             self.camera_x += 10
-        if mouse_y < self.screen_height * 0.05 and self.camera_y > 0:
+        if mouse_y < self.screen_height * 0.03 and self.camera_y > 0:
             self.camera_y -= 10
-        elif mouse_y > self.screen_height * 0.95 and self.camera_y < self.map_height - self.screen_height:
+        elif mouse_y > self.screen_height * 0.98 and self.camera_y < self.map_height - self.screen_height:
             self.camera_y += 10
+
+    def focus_target(self, target):
+        target_x = max(0, min(self.map_width - self.screen_width // 2, target.pos[0] * tile_width) - self.screen_width // 2 + tile_width // 2)
+        target_y = max(0, min(self.map_height - self.screen_height // 2, target.pos[1] * tile_height) - self.screen_height // 2 + tile_height // 2)
+        self.camera_x = target_x
+        self.camera_y = target_y
 
     def update_targets(self):
         for sprite in tiles_group:

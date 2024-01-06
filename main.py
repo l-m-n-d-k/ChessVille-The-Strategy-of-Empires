@@ -18,28 +18,48 @@ HOD = ''
 select_icon = 0
 
 
-def new_hod(player):
-    global HOD
+def new_hod(player, camera):
+    global HOD, select_icon
     if player == 'first':
         HOD = 'first'
         for sprite in players_group1:
             sprite.update_steps()
+        select_icon = 1
+        target = None
+        for sprite in players_group1:
+            if sprite.tip == select_icon + 1:
+                target = sprite
+        camera.focus_target(target)
     elif player == 'second':
         HOD = 'second'
         for sprite in players_group2:
             sprite.update_steps()
+        select_icon = 1
+        target = None
+        for sprite in players_group2:
+            if sprite.tip == select_icon + 4:
+                target = sprite
+        camera.focus_target(target)
 
 
-def update_icon(event):
+def update_icon(event, camera, HOD):
     global select_icon
     for sprite in system_group:
         if isinstance(sprite, PlayerIcon) and sprite.rect.collidepoint(event.pos):
             select_icon = sprite.numb
+            if HOD == 'first':
+                for sprite1 in players_group1:
+                    if select_icon + 1 == sprite1.tip:
+                        camera.focus_target(sprite1)
+            elif HOD == 'second':
+                for sprite1 in players_group2:
+                    if select_icon + 4 == sprite1.tip:
+                        camera.focus_target(sprite1)
             return True
     return False
 
 
-def move(player, hero, pos_x, pos_y, mapa):
+def move(player, hero, pos_x, pos_y, mapa, camera):
     my_hero = None
     if player == 'first':
         for sprite in players_group1:
@@ -67,6 +87,7 @@ def move(player, hero, pos_x, pos_y, mapa):
 
             my_hero.steps -= my_hero.board[pos_y][pos_x][0]
             my_hero.move(pos_x, pos_y, mapa)
+            #camera.focus_target(my_hero)
 
     elif player == 'second':
         for sprite in players_group2:
@@ -94,18 +115,19 @@ def move(player, hero, pos_x, pos_y, mapa):
 
             my_hero.steps -= my_hero.board[pos_y][pos_x][0]
             my_hero.move(pos_x, pos_y, mapa)
+            #camera.focus_target(my_hero)
 
 
 def main():
     global HOD
     map_game = Map()
-    new_hod('first')
+    camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
+    new_hod('first', camera)
     for sprite in players_group1:
         sprite.move(*sprite.pos, map_game)
     for sprite in players_group2:
         sprite.move(*sprite.pos, map_game)
 
-    camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
     player_icon_positions = [(10, height - 110), (120, height - 110), (230, height - 110)]
     player_icon = [PlayerIcon(position, i) for i, position in enumerate(player_icon_positions)]
 
@@ -126,7 +148,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 event_mousedown = event
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if update_icon(event) is False:
+                if update_icon(event, camera, HOD) is False:
                     # Получение координат мыши
                     tile_size = 100
                     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -134,9 +156,9 @@ def main():
                     tile_x = (mouse_x + camera.camera_x) // tile_size
                     tile_y = (mouse_y + camera.camera_y) // tile_size
 
-                    move(HOD, select_icon, tile_x, tile_y, map_game)
+                    move(HOD, select_icon, tile_x, tile_y, map_game, camera)
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
-                new_hod('first' if HOD == 'second' else 'second')
+                new_hod('first' if HOD == 'second' else 'second', camera)
 
         camera.update_camera()
         camera.update_targets()

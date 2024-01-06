@@ -67,6 +67,11 @@ class Players1(pygame.sprite.Sprite):
                  'Пусто': 0,
                  'Я': 0}
 
+        if self.tip in (1, 4):
+            steps['Холм'] = 1
+        elif self.tip in (3, 6):
+            steps['Река'] = 1
+
         c = True
         while c:
             c = 0
@@ -196,6 +201,11 @@ class Players2(pygame.sprite.Sprite):
                  'Вражеский герой': 2,
                  'Пусто': 0,
                  'Я': 0}
+
+        if self.tip in (1, 4):
+            steps['Холм'] = 1
+        elif self.tip in (3, 6):
+            steps['Река'] = 1
 
         c = True
         while c:
