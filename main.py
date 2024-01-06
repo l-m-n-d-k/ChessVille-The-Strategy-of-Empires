@@ -4,6 +4,7 @@ import os
 from classes_map import Map
 from classes_camera_cursor_pause_timer import MyCursor, Camera
 from classes_icons_and_select import PlayerIcon
+from classes_info import MiniMap
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
     tyman_group2, system_group
 from constants import *
@@ -121,12 +122,14 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
 def main():
     global HOD
     map_game = Map()
+    mimmap_game = MiniMap(map_game)
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
     new_hod('first', camera)
     for sprite in players_group1:
         sprite.move(*sprite.pos, map_game)
     for sprite in players_group2:
         sprite.move(*sprite.pos, map_game)
+    mimmap_game.update(HOD, map_game)
 
     player_icon_positions = [(10, height - 110), (120, height - 110), (230, height - 110)]
     player_icon = [PlayerIcon(position, i) for i, position in enumerate(player_icon_positions)]
@@ -157,8 +160,10 @@ def main():
                     tile_y = (mouse_y + camera.camera_y) // tile_size
 
                     move(HOD, select_icon, tile_x, tile_y, map_game, camera)
+                    mimmap_game.update(HOD, map_game)
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 new_hod('first' if HOD == 'second' else 'second', camera)
+                mimmap_game.update(HOD, map_game)
 
         camera.update_camera()
         camera.update_targets()

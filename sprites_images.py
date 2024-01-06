@@ -12,7 +12,7 @@ def load_image(name, directory='Фото персонажей', colorkey=None):
     if colorkey is not None:
         image = image.convert()
         if colorkey == -1:
-            colorkey = 'white'
+            colorkey = image.get_at((0, 0))
         image.set_colorkey(colorkey)
     else:
         image = image.convert_alpha()
@@ -37,4 +37,5 @@ images = {
     'иконка 1': load_image('Иконка 1.jpg'),
     'иконка 2': load_image('Иконка 2.jpg'),
     'иконка 3': load_image('Иконка 3.jpg'),
+    'миникарта': load_image('Миникарта.png', 'data', -1)
 }
