@@ -1,6 +1,6 @@
 import pygame
 from copy import deepcopy
-from groups_sprites import info_group, all_sprites
+from groups_sprites import info_group, button_group, all_sprites, players_group1, players_group2
 from sprites_images import images
 from classes_map import Map
 from constants import *
@@ -11,7 +11,11 @@ class MiniMap(pygame.sprite.Sprite):
         super().__init__(info_group, all_sprites)
         self.image = images['миникарта']
         self.rect = self.image.get_rect()
-        self.rect.bottomright = (width, height)
+        self.rect.bottomright = (width + 10, height + 10)
+
+        self.button_stats = ButtonStats(self)
+        self.button_wait = ButtonWait(self)
+
         self.size = 308, 308
         self.otstyp = 80, 8
         self.side = self.size[0] // map_width
@@ -32,23 +36,33 @@ class MiniMap(pygame.sprite.Sprite):
                 self.players = deepcopy(mapa.players)
         self.image = images['миникарта']
         self.rect = self.image.get_rect()
-        self.rect.bottomright = (width, height)
+        self.rect.bottomright = (width + 8, height + 10)
         for y in range(map_height):
             for x in range(map_width):
                 if HOD == 'first':
+                    if self.fon[y][x] == 7:
+                        pygame.draw.rect(self.image, (10, 69, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                    elif self.fon[y][x] == 9:
+                        pygame.draw.rect(self.image, (0, 153, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                    elif self.fon[y][x] == 8:
+                        pygame.draw.rect(self.image, (0, 103, 126), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                    elif self.fon[y][x] == 10:
+                        pygame.draw.rect(self.image, (100, 107, 99), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+
                     if self.tyman1[y][x] != 0:
                         pygame.draw.rect(self.image, (200, 200, 200), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                         continue
                     if self.players[y][x] in (1, 2, 3):
-                        pygame.draw.rect(self.image, (83, 55, 122), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.circle(self.image, (83, 55, 122), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.players[y][x] in (4, 5, 6):
-                        pygame.draw.rect(self.image, (175, 43, 30), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.circle(self.image, (175, 43, 30), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.neytral[y][x]:
-                        pygame.draw.rect(self.image, (236, 124, 38), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.circle(self.image, (236, 124, 38), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
 
+                elif HOD == 'second':
                     if self.fon[y][x] == 7:
                         pygame.draw.rect(self.image, (10, 69, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 9:
@@ -57,26 +71,41 @@ class MiniMap(pygame.sprite.Sprite):
                         pygame.draw.rect(self.image, (0, 103, 126), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 10:
                         pygame.draw.rect(self.image, (100, 107, 99), (x * self.side + 80, y * self.side + 8, self.side, self.side))
-                elif HOD == 'second':
+
                     if self.tyman2[y][x] != 0:
                         pygame.draw.rect(self.image, (200, 200, 200), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                         continue
                     if self.players[y][x] in (4, 5, 6):
-                        pygame.draw.rect(self.image, (83, 55, 122), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.circle(self.image, (83, 55, 122), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.players[y][x] in (1, 2, 3):
-                        pygame.draw.rect(self.image, (175, 43, 30), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.circle(self.image, (175, 43, 30), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.neytral[y][x]:
-                        pygame.draw.rect(self.image, (236, 124, 38), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.circle(self.image, (236, 124, 38),(x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
 
-                    if self.fon[y][x] == 7:
-                        pygame.draw.rect(self.image, (10, 69, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
-                    elif self.fon[y][x] == 9:
-                        pygame.draw.rect(self.image, (0, 153, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
-                    elif self.fon[y][x] == 8:
-                        pygame.draw.rect(self.image, (0, 103, 126), (x * self.side + 80, y * self.side + 8, self.side, self.side))
-                    elif self.fon[y][x] == 10:
-                        pygame.draw.rect(self.image, (100, 107, 99), (x * self.side + 80, y * self.side + 8, self.side, self.side))
 
+class ButtonStats(pygame.sprite.Sprite):
+    def __init__(self, mimimapa):
+        super().__init__(button_group, all_sprites)
+        self.image = images['кнопка характеристик']
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (mimimapa.rect.x + 3, mimimapa.rect.y + 202)
+
+
+class ButtonWait(pygame.sprite.Sprite):
+    def __init__(self, mimimapa):
+        super().__init__(button_group, all_sprites)
+        self.image = images['кнопка ожидания']
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (mimimapa.rect.x + 3, mimimapa.rect.y + 260)
+
+    def click(self, hod, icon):
+        numb = icon + 1 + (3 if hod == 'second' else 0)
+        for sprite in players_group1:
+            if sprite.tip == numb:
+                sprite.steps = 0
+        for sprite in players_group2:
+            if sprite.tip == numb:
+                sprite.steps = 0

@@ -42,8 +42,8 @@ class Camera:
             self.camera_y += 10
 
     def focus_target(self, target):
-        target_x = max(0, min(self.map_width - self.screen_width // 2, target.pos[0] * tile_width) - self.screen_width // 2 + tile_width // 2)
-        target_y = max(0, min(self.map_height - self.screen_height // 2, target.pos[1] * tile_height) - self.screen_height // 2 + tile_height // 2)
+        target_x = max(0, min(self.map_width - self.screen_width // 2 - tile_width // 2, target.pos[0] * tile_width - tile_width // 2) - self.screen_width // 2 + tile_width // 2)
+        target_y = max(0, min(self.map_height - self.screen_height // 2 - tile_height // 2, target.pos[1] * tile_height - tile_height // 2) - self.screen_height // 2 + tile_height // 2)
         self.camera_x = target_x
         self.camera_y = target_y
 

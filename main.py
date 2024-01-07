@@ -6,7 +6,7 @@ from classes_camera_cursor_pause_timer import MyCursor, Camera
 from classes_icons_and_select import PlayerIcon
 from classes_info import MiniMap
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group
+    tyman_group2, system_group, info_group, button_group
 from constants import *
 
 pygame.init()
@@ -17,6 +17,7 @@ clock = pygame.time.Clock()
 pygame.event.set_grab(True)
 HOD = ''
 select_icon = 0
+font = pygame.font.Font(None, 36)
 
 
 def new_hod(player, camera):
@@ -121,6 +122,18 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
 
 def main():
     global HOD
+    HOD = ''
+    all_sprites.empty()
+    tiles_group.empty()
+    players_group1.empty()
+    players_group2.empty()
+    neytral_group.empty()
+    tyman_group1.empty()
+    tyman_group2.empty()
+    info_group.empty()
+    system_group.empty()
+    button_group.empty()
+
     map_game = Map()
     mimmap_game = MiniMap(map_game)
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
@@ -152,7 +165,13 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 event_mousedown = event
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if update_icon(event, camera, HOD) is False:
+                if update_icon(event, camera, HOD) is True:
+                    pass
+                elif mimmap_game.button_stats.rect.collidepoint(event.pos):
+                    pass
+                elif mimmap_game.button_wait.rect.collidepoint(event.pos):
+                    mimmap_game.button_wait.click(HOD, select_icon)
+                else:
                     # Получение координат мыши
                     tile_size = 100
                     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -173,6 +192,9 @@ def main():
         map_game.draw_map(screen, HOD)
         for icon in player_icon:
             icon.draw(select_icon)
+        fps_now = str(int(clock.get_fps()))
+        fps_text = font.render("FPS: " + fps_now, True, (255, 255, 255), (0, 0, 0))
+        screen.blit(fps_text, (10, 10))
 
         clock.tick(fps)
         pygame.display.update()
