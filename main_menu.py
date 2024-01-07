@@ -15,6 +15,9 @@ def main_menu(screen, fps, clock):
     background_image = pygame.image.load('menu/fon.png')
     background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     menu_running = True
+    MyCursor()
+    pygame.mouse.set_visible(False)
+
     while menu_running:
         screen.blit(background_image, (0, 0))
         font = pygame.font.Font(None, 36)
@@ -35,13 +38,17 @@ def main_menu(screen, fps, clock):
                 menu_running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if start_button.collidepoint(event.pos):
-                    pygame.mouse.set_visible(False)
                     main()  # Завершение меню и начало игры
+                    system_group.empty()
+                    MyCursor()
                 elif exit_button.collidepoint(event.pos):
                     pygame.quit()  # Выход из игры
                     sys.exit()
+            if event.type == pygame.MOUSEMOTION:
+                system_group.update(event)
 
-        pygame.display.update()
+        system_group.draw(screen)
+        pygame.display.flip()
 
 
 if __name__ == "__main__":
