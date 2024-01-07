@@ -8,6 +8,8 @@ from classes_info import MiniMap
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
     tyman_group2, system_group
 from constants import *
+from main import *
+
 
 def main_menu(screen, fps, clock):
     background_image = pygame.image.load('menu/fon.png')
@@ -34,9 +36,13 @@ def main_menu(screen, fps, clock):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if start_button.collidepoint(event.pos):
                     pygame.mouse.set_visible(False)
-                    menu_running = False  # Завершение меню и начало игры
+                    main()  # Завершение меню и начало игры
                 elif exit_button.collidepoint(event.pos):
                     pygame.quit()  # Выход из игры
                     sys.exit()
 
         pygame.display.update()
+
+
+if __name__ == "__main__":
+    sys.exit(main_menu(screen, fps, clock))

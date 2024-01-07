@@ -8,7 +8,6 @@ from classes_info import MiniMap
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
     tyman_group2, system_group
 from constants import *
-from main_menu import main_menu
 
 pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
@@ -89,7 +88,7 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
 
             my_hero.steps -= my_hero.board[pos_y][pos_x][0]
             my_hero.move(pos_x, pos_y, mapa)
-            #camera.focus_target(my_hero)
+            # camera.focus_target(my_hero)
 
     elif player == 'second':
         for sprite in players_group2:
@@ -117,12 +116,11 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
 
             my_hero.steps -= my_hero.board[pos_y][pos_x][0]
             my_hero.move(pos_x, pos_y, mapa)
-            #camera.focus_target(my_hero)
+            # camera.focus_target(my_hero)
 
 
 def main():
     global HOD
-    main_menu(screen, fps, clock)
     map_game = Map()
     mimmap_game = MiniMap(map_game)
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
@@ -148,7 +146,7 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.mouse.set_visible(True)
-                    main_menu(screen, fps, clock)
+                    game_running = False
             if event.type == pygame.MOUSEMOTION:
                 event_mousemotion = event
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -178,7 +176,3 @@ def main():
 
         clock.tick(fps)
         pygame.display.update()
-    main_menu(screen, fps, clock)
-
-if __name__ == "__main__":
-    sys.exit(main())
