@@ -12,6 +12,21 @@ class Players1(pygame.sprite.Sprite):
         self.pos = pos_x, pos_y
         self._define_rect()
         self.tip = tile_type
+        self.army = {'Король': 1,
+                     'Ферзь': 0,
+                     'Ладья': 0,
+                     'Слон': 0,
+                     'Конь': 0,
+                     'Пешка': 0}
+        if self.tip == 1:
+            self.army['Конь'] = 2
+            self.army['Пешка'] = 4
+        elif self.tip == 2:
+            self.army['Ладья'] = 2
+            self.army['Пешка'] = 5
+        elif self.tip == 3:
+            self.army['Слон'] = 2
+            self.army['Пешка'] = 4
         self.steps = 0
         self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
 
@@ -147,6 +162,21 @@ class Players2(pygame.sprite.Sprite):
         self.pos = pos_x, pos_y
         self._define_rect()
         self.tip = tile_type
+        self.army = {'Король': 1,
+                     'Ферзь': 0,
+                     'Ладья': 0,
+                     'Слон': 0,
+                     'Конь': 0,
+                     'Пешка': 0}
+        if self.tip == 4:
+            self.army['Конь'] = 2
+            self.army['Пешка'] = 4
+        elif self.tip == 5:
+            self.army['Ладья'] = 2
+            self.army['Пешка'] = 5
+        elif self.tip == 6:
+            self.army['Слон'] = 2
+            self.army['Пешка'] = 4
         self.steps = 0
         self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
 

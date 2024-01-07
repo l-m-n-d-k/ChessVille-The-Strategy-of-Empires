@@ -86,6 +86,26 @@ class MiniMap(pygame.sprite.Sprite):
                         pygame.draw.circle(self.image, (236, 124, 38),(x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
 
+    def update_select(self, event):
+        if self.button_wait.rect.collidepoint(event.pos):
+            self.button_wait.image = images['зажатая кнопка ожидания']
+        else:
+            self.button_wait.image = images['кнопка ожидания']
+        if self.button_stats.rect.collidepoint(event.pos):
+            self.button_stats.image = images['зажатая кнопка характеристик']
+        else:
+            self.button_stats.image = images['кнопка характеристик']
+        if self.button_unit_wait.rect.collidepoint(event.pos):
+            if self.button_unit_wait.sost == 'new hod':
+                self.button_unit_wait.image = images['зажатый следующий ход']
+            else:
+                self.button_unit_wait.image = images['зажатое ожидание приказа']
+        else:
+            if self.button_unit_wait.sost == 'new hod':
+                self.button_unit_wait.image = images['следующий ход']
+            else:
+                self.button_unit_wait.image = images['кнопка юнит ждёт']
+
 
 class ButtonStats(pygame.sprite.Sprite):
     def __init__(self, mimimapa):
@@ -162,3 +182,37 @@ class ButtonUnitWait(pygame.sprite.Sprite):
                     self.image = images['кнопка юнит ждёт']
                     self.sost = 'wait'
                     return 'следующий ход', None, None
+
+
+class TableSteps(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(info_group, all_sprites)
+        self.image = images['табличка характеристик']
+        self.rect = self.image.get_rect()
+        self.rect.bottomleft = 0, height
+
+    def update_stats(self, hod, icon):
+        self.image = images['табличка характеристик'].copy()
+        numb = icon + 1 + (3 if hod == 'second' else 0)
+        my_hero = None
+        for sprite in players_group1:
+            if sprite.tip == numb:
+                my_hero = sprite
+        for sprite in players_group2:
+            if sprite.tip == numb:
+                my_hero = sprite
+
+        steps = str(my_hero.steps)
+        max_steps = str(6 if numb in (2, 5) else 4)
+        strong = str(sum(my_hero.army[key] * ceil[key] for key in my_hero.army))
+        image = my_hero.image
+
+        font = pygame.font.Font(None, 30)
+        text1 = font.render(steps, True, (250, 250, 250))
+        text2 = font.render(max_steps, True, (250, 250, 250))
+        text3 = font.render(strong, True, (250, 250, 250))
+
+        self.image.blit(pygame.transform.scale(image, (90, 90)), (10, 45))
+        self.image.blit(text1, (250, 72))
+        self.image.blit(text2, (270, 72))
+        self.image.blit(text3, (255, 97))

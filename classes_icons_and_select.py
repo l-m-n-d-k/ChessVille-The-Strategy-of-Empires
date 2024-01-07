@@ -12,7 +12,11 @@ class PlayerIcon(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=position)
         self.numb = player_number
 
-    def draw(self, select_icon):
+    def draw_base_rama(self, select_icon):
+        rect = self.rect[0] - 7, self.rect[1] - 7, self.rect[2] + 14, self.rect[3] + 14
+        pygame.draw.rect(screen, (78, 87, 84), rect, 7)
+
+    def draw_select_rama(self, select_icon):
         if self.numb == select_icon:
-            rect = self.rect[0] - 10, self.rect[1] - 10, self.rect[2] + 20, self.rect[3] + 20
-            pygame.draw.rect(screen, 'red', rect, 10)
+            rect = self.rect[0] - 7, self.rect[1] - 7, self.rect[2] + 14, self.rect[3] + 14
+            pygame.draw.rect(screen, 'red', rect, 9)

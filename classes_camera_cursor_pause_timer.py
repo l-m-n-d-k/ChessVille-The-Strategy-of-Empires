@@ -32,18 +32,20 @@ class Camera:
     def update_camera(self):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         # Проверка, достигла ли мышь границ экрана для перемещения карты
-        if mouse_x < self.screen_width * 0.03 and self.camera_x > 0:
+        if mouse_x < self.screen_width * 0.005 and self.camera_x > 0:
             self.camera_x -= 10
-        elif mouse_x > self.screen_width * 0.98 and self.camera_x < self.map_width - self.screen_width:
+        elif mouse_x > self.screen_width * 0.99 and self.camera_x < self.map_width - self.screen_width:
             self.camera_x += 10
-        if mouse_y < self.screen_height * 0.03 and self.camera_y > 0:
+        if mouse_y < self.screen_height * 0.005 and self.camera_y > 0:
             self.camera_y -= 10
-        elif mouse_y > self.screen_height * 0.98 and self.camera_y < self.map_height - self.screen_height:
+        elif mouse_y > self.screen_height * 0.99 and self.camera_y < self.map_height - self.screen_height:
             self.camera_y += 10
 
     def focus_target(self, target):
-        target_x = max(0, min(self.map_width - self.screen_width, target.pos[0] * tile_width - self.screen_width // 2 + tile_width // 2))
-        target_y = max(0, min(self.map_height - self.screen_height, target.pos[1] * tile_height - self.screen_height // 2 + tile_height // 2))
+        target_x = max(0, min(self.map_width - self.screen_width,
+                              target.pos[0] * tile_width - self.screen_width // 2 + tile_width // 2))
+        target_y = max(0, min(self.map_height - self.screen_height,
+                              target.pos[1] * tile_height - self.screen_height // 2 + tile_height // 2))
         self.camera_x = target_x
         self.camera_y = target_y
 

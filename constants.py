@@ -8,3 +8,9 @@ width, height = screen.get_width(), screen.get_height()
 
 tile_width = tile_height = 100
 map_width = map_height = 30
+ceil = {'Король': 0,
+        'Ферзь': 9,
+        'Ладья': 5,
+        'Слон': 3,
+        'Конь': 3,
+        'Пешка': 1}
