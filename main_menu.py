@@ -18,20 +18,20 @@ def main_menu(screen, fps, clock):
     MyCursor()
     pygame.mouse.set_visible(False)
 
+    # Загрузка изображений для кнопок
+    start_image = pygame.image.load('menu/start.png')  # Путь к изображению для кнопки "Начать игру"
+    exit_image = pygame.image.load('menu/exit.png')    # Путь к изображению для кнопки "Выход"
+
     while menu_running:
         screen.blit(background_image, (0, 0))
         font = pygame.font.Font(None, 36)
 
-        # Создание текстовых объектов для кнопок
-        start_text = font.render('Начать игру', True, (255, 255, 255))
-        exit_text = font.render('Выход', True, (255, 255, 255))
-
         # Координаты кнопок
-        start_button = start_text.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2 - 50))
-        exit_button = exit_text.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2 + 50))
+        start_button = start_image.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2 - 50))
+        exit_button = exit_image.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2 + 50))
 
-        screen.blit(start_text, start_button)
-        screen.blit(exit_text, exit_button)
+        screen.blit(start_image, start_button)
+        screen.blit(exit_image, exit_button)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
