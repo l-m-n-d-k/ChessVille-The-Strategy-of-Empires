@@ -67,11 +67,13 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
         for sprite in players_group1:
             if sprite.tip == hero + 1:
                 my_hero = sprite
+                my_hero.update_board(mapa)
         if not isinstance(my_hero.board[pos_y][pos_x][0], int):
             return  # звук "сюда нельзя пойти"
         elif my_hero.board[pos_y][pos_x][0] > my_hero.steps:
             return  # звук "слишком далеко"
         elif my_hero.board[pos_y][pos_x][2] in ['Нейтрал', 'Вражеский герой']:
+            print(1)
             ok = ...  # Окошко вопрос pyqt хочет ли игрок пройти войной
             if ok:
                 chess_boy()
@@ -95,6 +97,7 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
         for sprite in players_group2:
             if sprite.tip == hero + 4:
                 my_hero = sprite
+                my_hero.update_board(mapa)
         if not isinstance(my_hero.board[pos_y][pos_x][0], int):
             return  # звук "сюда нельзя пойти"
         elif my_hero.board[pos_y][pos_x][0] > my_hero.steps:
@@ -106,6 +109,7 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
             else:
                 return
         else:
+
             mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0
             mapa.players[pos_y][pos_x] = my_hero.tip
 
@@ -158,7 +162,6 @@ def main():
                 game_running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.mouse.set_visible(True)
                     game_running = False
             if event.type == pygame.MOUSEMOTION:
                 event_mousemotion = event
@@ -197,4 +200,4 @@ def main():
         screen.blit(fps_text, (10, 10))
 
         clock.tick(fps)
-        pygame.display.update()
+        pygame.display.flip()

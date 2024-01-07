@@ -15,6 +15,7 @@ class MiniMap(pygame.sprite.Sprite):
 
         self.button_stats = ButtonStats(self)
         self.button_wait = ButtonWait(self)
+        self.button_unit_wait = ButtonUnitWait(self)
 
         self.size = 308, 308
         self.otstyp = 80, 8
@@ -109,3 +110,11 @@ class ButtonWait(pygame.sprite.Sprite):
         for sprite in players_group2:
             if sprite.tip == numb:
                 sprite.steps = 0
+
+
+class ButtonUnitWait(pygame.sprite.Sprite):
+    def __init__(self, mimimapa):
+        super().__init__(button_group, all_sprites)
+        self.image = images['кнопка юнит ждёт']
+        self.rect = self.image.get_rect()
+        self.rect.bottomright = (mimimapa.rect.topright[0] - 13, mimimapa.rect.topright[1])

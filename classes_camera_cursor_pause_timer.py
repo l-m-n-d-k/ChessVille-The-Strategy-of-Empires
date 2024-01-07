@@ -6,8 +6,8 @@ from constants import *
 
 
 class MyCursor(pygame.sprite.Sprite):
-    def __init__(self, *group):
-        super().__init__(system_group, all_sprites, *group)
+    def __init__(self):
+        super().__init__(system_group, all_sprites)
         self.image = images['курсор']
         self.image.set_alpha(80)
         self.rect = self.image.get_rect()
@@ -42,8 +42,8 @@ class Camera:
             self.camera_y += 10
 
     def focus_target(self, target):
-        target_x = max(0, min(self.map_width - self.screen_width // 2 - tile_width // 2, target.pos[0] * tile_width - tile_width // 2) - self.screen_width // 2 + tile_width // 2)
-        target_y = max(0, min(self.map_height - self.screen_height // 2 - tile_height // 2, target.pos[1] * tile_height - tile_height // 2) - self.screen_height // 2 + tile_height // 2)
+        target_x = max(0, min(self.map_width - self.screen_width, target.pos[0] * tile_width - self.screen_width // 2 + tile_width // 2))
+        target_y = max(0, min(self.map_height - self.screen_height, target.pos[1] * tile_height - self.screen_height // 2 + tile_height // 2))
         self.camera_x = target_x
         self.camera_y = target_y
 
