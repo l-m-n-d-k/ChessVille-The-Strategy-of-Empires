@@ -61,7 +61,7 @@ def update_icon(event, camera, HOD):
     return False
 
 
-def move(player, hero, pos_x, pos_y, mapa, camera):
+def move(player, hero, pos_x, pos_y, mapa):
     my_hero = None
     if player == 'first':
         for sprite in players_group1:
@@ -125,7 +125,7 @@ def move(player, hero, pos_x, pos_y, mapa, camera):
 
 
 def main():
-    global HOD
+    global HOD, select_icon
     HOD = ''
     all_sprites.empty()
     tiles_group.empty()
@@ -174,6 +174,15 @@ def main():
                     pass
                 elif mimmap_game.button_wait.rect.collidepoint(event.pos):
                     mimmap_game.button_wait.click(HOD, select_icon)
+                    mimmap_game.button_unit_wait.upgrade(HOD)
+                elif mimmap_game.button_unit_wait.rect.collidepoint(event.pos):
+                    sost, sprite, numb = mimmap_game.button_unit_wait.upgrade(HOD, True)
+                    if sost == 'юнит ждёт приказа':
+                        select_icon = numb
+                        camera.focus_target(sprite)
+                    else:
+                        new_hod('first' if HOD == 'second' else 'second', camera)
+                        mimmap_game.update(HOD, map_game)
                 else:
                     # Получение координат мыши
                     tile_size = 100
@@ -182,7 +191,8 @@ def main():
                     tile_x = (mouse_x + camera.camera_x) // tile_size
                     tile_y = (mouse_y + camera.camera_y) // tile_size
 
-                    move(HOD, select_icon, tile_x, tile_y, map_game, camera)
+                    move(HOD, select_icon, tile_x, tile_y, map_game)
+                    mimmap_game.button_unit_wait.upgrade(HOD)
                     mimmap_game.update(HOD, map_game)
             if event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
                 new_hod('first' if HOD == 'second' else 'second', camera)

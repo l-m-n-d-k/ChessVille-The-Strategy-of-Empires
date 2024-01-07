@@ -118,3 +118,47 @@ class ButtonUnitWait(pygame.sprite.Sprite):
         self.image = images['кнопка юнит ждёт']
         self.rect = self.image.get_rect()
         self.rect.bottomright = (mimimapa.rect.topright[0] - 13, mimimapa.rect.topright[1])
+        self.sost = 'wait'
+
+    def upgrade(self, hod, click=False):
+        if hod == 'first':
+            if self.sost == 'wait':
+                for sprite in sorted(players_group1, key=lambda spr: spr.tip):
+                    if sprite.steps:
+                        icon = sprite.tip - 1
+                        hero = sprite
+                        sost = 'юнит ждёт приказа'
+                        break
+                else:
+                    icon = None
+                    hero = None
+                    sost = 'следующий ход'
+                    self.image = images['следующий ход']
+                    self.sost = 'new hod'
+                return sost, hero, icon
+            elif self.sost == 'new hod':
+                if click:
+                    self.image = images['кнопка юнит ждёт']
+                    self.sost = 'wait'
+                    return 'следующий ход', None, None
+
+        elif hod == 'second':
+            if self.sost == 'wait':
+                for sprite in sorted(players_group2, key=lambda spr: spr.tip):
+                    if sprite.steps:
+                        icon = sprite.tip - 4
+                        hero = sprite
+                        sost = 'юнит ждёт приказа'
+                        break
+                else:
+                    icon = None
+                    hero = None
+                    sost = 'следующий ход'
+                    self.image = images['следующий ход']
+                    self.sost = 'new hod'
+                return sost, hero, icon
+            elif self.sost == 'new hod':
+                if click:
+                    self.image = images['кнопка юнит ждёт']
+                    self.sost = 'wait'
+                    return 'следующий ход', None, None
