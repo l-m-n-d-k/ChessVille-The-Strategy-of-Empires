@@ -3,7 +3,7 @@ import csv
 from classes_fon_and_tyman import Tile, Tyman1, Tyman2
 from classes_heroes_and_neytral import Players1, Players2, Neytral
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group, info_group, button_group
+    tyman_group2, system_group, info_group, button_group, window_group
 from constants import *
 
 
@@ -48,6 +48,7 @@ class Map:
             tyman_group1.draw(screen)
             info_group.draw(screen)
             button_group.draw(screen)
+            window_group.draw(screen)
             system_group.draw(screen)
         elif HOD == 'second':
             tiles_group.draw(screen)
@@ -57,4 +58,5 @@ class Map:
             tyman_group2.draw(screen)
             info_group.draw(screen)
             button_group.draw(screen)
+            window_group.draw(screen)
             system_group.draw(screen)

@@ -2,11 +2,11 @@ import sys
 import pygame
 import os
 from classes_map import Map
-from classes_camera_cursor_pause_timer import MyCursor, Camera
+from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim
 from classes_icons_and_select import PlayerIcon
 from classes_info import MiniMap, TableSteps
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group, info_group, button_group
+    tyman_group2, system_group, info_group, button_group, window_group
 from constants import *
 
 pygame.init()
@@ -136,11 +136,15 @@ def main():
     tyman_group2.empty()
     info_group.empty()
     system_group.empty()
+    window_group.empty()
     button_group.empty()
 
     map_game = Map()
     mimmap_game = MiniMap(map_game)
     table_parametrs = TableSteps()
+    timer = TimerAnim(7, 1, width // 2 - 30, height - 150)
+    timer_event = pygame.USEREVENT + 1
+    pygame.time.set_timer(timer_event, 285)
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
     new_hod('first', camera)
     for sprite in players_group1:
@@ -199,6 +203,8 @@ def main():
                     mimmap_game.button_unit_wait.upgrade(HOD)
                     mimmap_game.update(HOD, map_game)
                     table_parametrs.update_stats(HOD, select_icon)
+            if event.type == timer_event:
+                timer.update_value()
 
         camera.update_camera()
         camera.update_targets()
@@ -212,7 +218,7 @@ def main():
             icon.draw_select_rama(select_icon)
         fps_now = str(int(clock.get_fps()))
         fps_text = font.render("FPS: " + fps_now, True, (255, 255, 255), (0, 0, 0))
-        screen.blit(fps_text, (10, 10))
+        screen.blit(fps_text, (width - 100, 10))
 
         clock.tick(fps)
         pygame.display.flip()

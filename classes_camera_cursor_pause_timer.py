@@ -1,7 +1,7 @@
 import pygame
 from sprites_images import images
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group
+    tyman_group2, system_group, window_group
 from constants import *
 
 
@@ -68,3 +68,32 @@ class Camera:
         for sprite in tyman_group2:
             sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
                                                        tile_height * sprite.pos[1] - self.camera_y)
+
+
+class TimerAnim(pygame.sprite.Sprite):
+    def __init__(self, columns, rows, x, y, sheet=images['таймер анимашка']):
+        super().__init__(window_group, all_sprites)
+        self.frames = []
+        self.cut_sheet(sheet, columns, rows)
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
+        self.rect = self.rect.move(x, y)
+
+    def cut_sheet(self, sheet, columns, rows):
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns, sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames.append(sheet.subsurface(pygame.Rect(frame_location, self.rect.size)))
+
+    def update_value(self):
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.frames[self.cur_frame]
+
+
+"""class Timer(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(button_group, all_sprites)
+        self.image = images['кнопка характеристик']
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (mimimapa.rect.x + 3, mimimapa.rect.y + 202)"""
