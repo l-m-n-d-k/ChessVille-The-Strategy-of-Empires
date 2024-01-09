@@ -2,7 +2,7 @@ import sys
 import pygame
 import os
 from classes_map import Map
-from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim
+from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim, Pause
 from classes_icons_and_select import PlayerIcon
 from classes_info import MiniMap, TableSteps
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
@@ -124,6 +124,10 @@ def move(player, hero, pos_x, pos_y, mapa):
             # camera.focus_target(my_hero)
 
 
+def open_pause():
+    print('Пауза')
+
+
 def main():
     global HOD, select_icon
     HOD = ''
@@ -143,6 +147,7 @@ def main():
     mimmap_game = MiniMap(map_game)
     table_parametrs = TableSteps()
     timer = TimerAnim(7, 1, width // 2 - 30, height - 150)
+    pause = Pause()
     timer_event = pygame.USEREVENT + 1
     pygame.time.set_timer(timer_event, 285)
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)
@@ -176,6 +181,8 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if update_icon(event, camera, HOD) is True:
                     pass
+                elif pause.rect.collidepoint(event.pos):
+                    open_pause()
                 elif mimmap_game.button_stats.rect.collidepoint(event.pos):
                     pass
                 elif mimmap_game.button_wait.rect.collidepoint(event.pos):
