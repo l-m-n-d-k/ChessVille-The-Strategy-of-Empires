@@ -1,12 +1,7 @@
 import sys
 import pygame
-import os
-from classes_map import Map
-from classes_camera_cursor_pause_timer import MyCursor, Camera
-from classes_icons_and_select import PlayerIcon
-from classes_info import MiniMap
-from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group
+from classes_camera_cursor_pause_timer import MyCursor
+from groups_sprites import system_group
 from constants import *
 from main import *
 
@@ -19,9 +14,11 @@ def main_menu(screen, fps, clock):
     pygame.mouse.set_visible(False)
 
     # Загрузка изображений для кнопок
-    start_image = pygame.image.load('menu/start.png')  # Путь к изображению для кнопки "Начать игру"
-    exit_image = pygame.image.load('menu/exit.png')    # Путь к изображению для кнопки "Выход"
-
+    start_image = pygame.image.load('menu/new_game.png').subsurface((0, 650, 1500, 200))  # Путь к изображению для кнопки "Начать игру"
+    start_image = pygame.transform.scale(start_image, (500, 70))
+    exit_image = pygame.image.load('menu/exit.png').subsurface((0, 650, 1500, 200))    # Путь к изображению для кнопки "Выход"
+    exit_image = pygame.transform.scale(exit_image, (500, 70))
+    
     while menu_running:
         screen.blit(background_image, (0, 0))
         font = pygame.font.Font(None, 36)
