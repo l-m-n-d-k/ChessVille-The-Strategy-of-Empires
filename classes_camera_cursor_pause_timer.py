@@ -1,7 +1,7 @@
 import pygame
 from sprites_images import images
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group, window_group
+    tyman_group2, system_group, window_group, button_group
 from constants import *
 
 
@@ -97,3 +97,11 @@ class TimerAnim(pygame.sprite.Sprite):
         self.image = images['кнопка характеристик']
         self.rect = self.image.get_rect()
         self.rect.topleft = (mimimapa.rect.x + 3, mimimapa.rect.y + 202)"""
+
+
+class Pause(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(button_group, all_sprites)
+        self.image = images['пауза']
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (10, 10)
