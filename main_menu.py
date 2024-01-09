@@ -15,9 +15,9 @@ def main_menu(screen, fps, clock):
 
     # Загрузка изображений для кнопок
     start_image = pygame.image.load('menu/new_game.png').subsurface((0, 650, 1500, 200))  # Путь к изображению для кнопки "Начать игру"
-    start_image = pygame.transform.scale(start_image, (500, 70))
-    exit_image = pygame.image.load('menu/exit.png').subsurface((0, 650, 1500, 200))    # Путь к изображению для кнопки "Выход"
-    exit_image = pygame.transform.scale(exit_image, (500, 70))
+    start_image = pygame.transform.scale(start_image, (500, 80))
+    exit_image = pygame.image.load('menu/exit.png').subsurface((0, 600, 1500, 500))    # Путь к изображению для кнопки "Выход"
+    exit_image = pygame.transform.scale(exit_image, (500, 165))
     
     while menu_running:
         screen.blit(background_image, (0, 0))
@@ -25,7 +25,7 @@ def main_menu(screen, fps, clock):
 
         # Координаты кнопок
         start_button = start_image.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2 - 50))
-        exit_button = exit_image.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2 + 50))
+        exit_button = exit_image.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2 + 100))
 
         screen.blit(start_image, start_button)
         screen.blit(exit_image, exit_button)
