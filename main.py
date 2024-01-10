@@ -20,6 +20,7 @@ select_icon = 0
 font = pygame.font.Font(None, 36)
 
 
+
 def new_hod(player, camera):
     global HOD, select_icon
     if player == 'first':
@@ -125,7 +126,17 @@ def move(player, hero, pos_x, pos_y, mapa):
 
 
 def open_pause():
+    # Загружаем изображения для меню и кнопок
+    menu_in_game_image = pygame.image.load('menu/menu_in_game.png')
+    exit_button_in_game_image = pygame.image.load('menu/exit_button_in_game.png')
+    return_image = pygame.image.load('menu/return.png')
+    to_main_menu_image = pygame.image.load('menu/to_main_menu.png')
+
+    menu_fon = menu_in_game_image.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2))
+
     print('Пауза')
+
+
 
 
 def main():

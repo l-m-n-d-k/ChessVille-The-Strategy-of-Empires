@@ -48,5 +48,5 @@ images = {
     'зажатый следующий ход': load_image('Зажатый следующий ход.png', 'data', -1),
     'табличка характеристик': load_image('Табличка характеристик.png', 'data').subsurface((0, 0, 328, 148)),
     'таймер анимашка': pygame.transform.scale(load_image('Анимация таймера.png', 'data', -1), (400, 100)),
-    'пауза': pygame.transform.scale(load_image('settings.png', 'data'), (50, 50))
+    'пауза': pygame.transform.scale(load_image('settings.png', 'data'), (75, 75))
 }
