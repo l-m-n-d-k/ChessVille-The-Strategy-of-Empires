@@ -126,17 +126,6 @@ def move(player, hero, pos_x, pos_y, mapa):  # передвижение игро
             my_hero.steps -= my_hero.board[pos_y][pos_x][0]  # уменьшаем очки передвижения героя
             my_hero.move(pos_x, pos_y, mapa)  # от лица героя меняем свои координаты, обновляем карту, куда можно пойти
 
-
-def open_pause():
-    menu_in_game_image = pygame.image.load('menu/menu_in_game.png')
-    exit_button_in_game_image = pygame.image.load('menu/exit_button_in_game.png')
-    return_image = pygame.image.load('menu/return.png')
-    to_main_menu_image = pygame.image.load('menu/to_main_menu.png')
-
-    menu_fon = menu_in_game_image.get_rect(center=(screen.get_width() / 2, screen.get_height() / 2))
-    print('Пауза')
-
-
 def create_SmallWindow(sprite, tile_x, tile_y, pos):
     SmallWindow(sprite, tile_x, tile_y, HOD, pos)
 
