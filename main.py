@@ -137,8 +137,8 @@ def open_pause():
     print('Пауза')
 
 
-def create_SmallWindow(sprite, tile_x, tile_y):
-    SmallWindow(sprite, tile_x, tile_y)
+def create_SmallWindow(sprite, tile_x, tile_y, pos):
+    SmallWindow(sprite, tile_x, tile_y, HOD, pos)
 
 
 def main():
@@ -198,15 +198,15 @@ def main():
                         map_game.tyman2[tile_y][tile_x] == 0 and HOD == 'second':
                     for sprite in players_group1:
                         if sprite.rect.collidepoint(event.pos):
-                            tim = threading.Timer(2, create_SmallWindow, args=(sprite, tile_x, tile_y))  # Задержка в 5 секунд
+                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
                             tim.start()
                     for sprite in players_group2:
                         if sprite.rect.collidepoint(event.pos):
-                            tim = threading.Timer(2, create_SmallWindow, args=(sprite, tile_x, tile_y))  # Задержка в 5 секунд
+                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
                             tim.start()
                     for sprite in neytral_group:
                         if sprite.rect.collidepoint(event.pos):
-                            tim = threading.Timer(2, create_SmallWindow, args=(sprite, tile_x, tile_y))  # Задержка в 5 секунд
+                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
                             tim.start()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 event_mousedown = event
@@ -249,7 +249,6 @@ def main():
         camera.update_targets()  # сдвигаем карту на текущее отклонение камеры
         system_group.update(event_mousemotion, event_mousedown)
         window_group.update(camera, event_mousemotion)
-        #all_sprites.update(event_mousemotion, event_mousedown)
         table_parametrs.update_stats(HOD, select_icon)
         map_game.draw_map(screen, HOD)  # рисуем карту
         for icon in player_icon:  # рисуем рамки иконок

@@ -109,7 +109,7 @@ class MiniMap(pygame.sprite.Sprite):
 
 class ButtonStats(pygame.sprite.Sprite):
     def __init__(self, mimimapa):
-        super().__init__(button_group, all_sprites)
+        super().__init__(info_group, all_sprites)
         self.image = images['кнопка характеристик']
         self.rect = self.image.get_rect()
         self.rect.topleft = (mimimapa.rect.x + 3, mimimapa.rect.y + 202)
@@ -134,7 +134,7 @@ class ButtonWait(pygame.sprite.Sprite):
 
 class ButtonUnitWait(pygame.sprite.Sprite):
     def __init__(self, mimimapa):
-        super().__init__(button_group, all_sprites)
+        super().__init__(info_group, all_sprites)
         self.image = images['кнопка юнит ждёт']
         self.rect = self.image.get_rect()
         self.rect.bottomright = (mimimapa.rect.topright[0] - 13, mimimapa.rect.topright[1])

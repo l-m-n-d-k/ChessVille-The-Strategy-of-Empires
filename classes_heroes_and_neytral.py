@@ -12,6 +12,7 @@ class Players1(pygame.sprite.Sprite):
         self.pos = pos_x, pos_y
         self._define_rect()
         self.tip = tile_type
+        self.name = names[self.tip]
         self.army = {'Король': 1,
                      'Ферзь': 0,
                      'Ладья': 0,
@@ -145,13 +146,12 @@ class Players1(pygame.sprite.Sprite):
                         if lst_sosedey:
                             optional_ceil = min(lst_sosedey, key=lambda i: i[0] + steps[i[1]] + steps[i[2]])
                             numb = optional_ceil[0] + steps[ceil1[1]] + steps[ceil1[2]]
-                            if numb != ceil1[0]:
+                            if numb < ceil1[0]:
                                 board_copy[y][x] = [numb, *ceil1[1:]]
                                 c += 1
                         else:
                             pass
             board = deepcopy(board_copy)
-
         self.board = deepcopy(board)
 
 
@@ -162,6 +162,7 @@ class Players2(pygame.sprite.Sprite):
         self.pos = pos_x, pos_y
         self._define_rect()
         self.tip = tile_type
+        self.name = names[self.tip]
         self.army = {'Король': 1,
                      'Ферзь': 0,
                      'Ладья': 0,
@@ -309,6 +310,9 @@ class Neytral(pygame.sprite.Sprite):
         self.image = images[tile_type]
         self.pos = pos_x, pos_y
         self._define_rect()
+        self.tip = tile_type
+        self.name = names[self.tip]
+        self.steps = 0
         self.army = {'Король': 1,
                      'Ферзь': 0,
                      'Ладья': 0,

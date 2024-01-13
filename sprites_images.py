@@ -1,5 +1,6 @@
 import pygame
 import os
+import sys
 from constants import *
 
 
@@ -49,5 +50,17 @@ images = {
     'табличка характеристик': load_image('Табличка характеристик.png', 'data').subsurface((0, 0, 328, 148)),
     'таймер анимашка': pygame.transform.scale(load_image('Анимация таймера.png', 'data', -1), (400, 100)),
     'пауза': pygame.transform.scale(load_image('settings.png', 'data'), (75, 75)),
-    'окошко кратких характеристик': pygame.transform.scale(load_image('Окошко кратких характеристик.PNG', 'data', -1), (280, 334)).subsurface(4, 0, 276, 330),
+    'окошко кратких характеристик': pygame.transform.scale(load_image('Окошко кратких характеристик.PNG', 'data'), (280, 334)).subsurface(4, 4, 274, 326),
+    'король белые': load_image('Шахматные фигуры 2д.png').subsurface((64 * 0, 64 * 1, 64, 64)),
+    'ферзь белые': load_image('Шахматные фигуры 2д.png').subsurface((64 * 1, 64 * 1, 64, 64)),
+    'ладья белые': load_image('Шахматные фигуры 2д.png').subsurface((64 * 2, 64 * 1, 64, 64)),
+    'конь белые': load_image('Шахматные фигуры 2д.png').subsurface((64 * 3, 64 * 1, 64, 64)),
+    'слон белые': load_image('Шахматные фигуры 2д.png').subsurface((64 * 4, 64 * 1, 64, 64)),
+    'пешка белые': load_image('Шахматные фигуры 2д.png').subsurface((64 * 5, 64 * 1, 64, 64)),
+    'король чёрные': load_image('Шахматные фигуры 2д.png').subsurface((64 * 0, 64 * 0, 64, 64)),
+    'ферзь чёрные': load_image('Шахматные фигуры 2д.png').subsurface((64 * 1, 64 * 0, 64, 64)),
+    'ладья чёрные': load_image('Шахматные фигуры 2д.png').subsurface((64 * 2, 64 * 0, 64, 64)),
+    'конь чёрные': load_image('Шахматные фигуры 2д.png').subsurface((64 * 3, 64 * 0, 64, 64)),
+    'слон чёрные': load_image('Шахматные фигуры 2д.png').subsurface((64 * 4, 64 * 0, 64, 64)),
+    'пешка чёрные': load_image('Шахматные фигуры 2д.png').subsurface((64 * 5, 64 * 0, 64, 64)),
 }
