@@ -38,6 +38,8 @@ class Map:
                     Players1(sprite, x, y)
                 elif sprite in (4, 5, 6):
                     Players2(sprite, x, y)
+        for sprite in neytral_group:
+            sprite.create_army()
 
     def draw_map(self, screen, HOD):
         if HOD == 'first':
@@ -47,8 +49,8 @@ class Map:
             neytral_group.draw(screen)
             tyman_group1.draw(screen)
             info_group.draw(screen)
-            button_group.draw(screen)
             window_group.draw(screen)
+            button_group.draw(screen)
             system_group.draw(screen)
         elif HOD == 'second':
             tiles_group.draw(screen)
@@ -57,6 +59,6 @@ class Map:
             neytral_group.draw(screen)
             tyman_group2.draw(screen)
             info_group.draw(screen)
-            button_group.draw(screen)
             window_group.draw(screen)
+            button_group.draw(screen)
             system_group.draw(screen)

@@ -309,6 +309,12 @@ class Neytral(pygame.sprite.Sprite):
         self.image = images[tile_type]
         self.pos = pos_x, pos_y
         self._define_rect()
+        self.army = {'Король': 1,
+                     'Ферзь': 0,
+                     'Ладья': 0,
+                     'Слон': 0,
+                     'Конь': 0,
+                     'Пешка': 0}
 
     def _define_rect(self):
         self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])
@@ -316,3 +322,36 @@ class Neytral(pygame.sprite.Sprite):
     def move(self, pos_x, pos_y):
         self.pos = pos_x, pos_y
         self._define_rect()
+
+    def create_army(self):
+        rasst1 = min(abs(player.pos[0] - self.pos[0]) + abs(player.pos[1] - self.pos[1]) for player in players_group1)
+        rasst2 = min(abs(player.pos[0] - self.pos[0]) + abs(player.pos[1] - self.pos[1]) for player in players_group2)
+        rasst = min(rasst1, rasst2)
+        balans = {9: 7,
+                  16: 16,
+                  25: 32,
+                  36: 50,
+                  49: 70,
+                  64: 95,
+                  81: 110,
+                  100: 125}
+        strong = 0
+        for key in reversed(balans.keys()):
+            if rasst <= key:
+                strong = balans[key]
+        strong_now = 0
+        figurs = ['Пешка', 'Конь', 'Слон', 'Ладья', 'Ферзь']
+        while abs(strong - strong_now) > strong * 0.1:
+            for figur in figurs:
+                if sum(otryd for otryd in self.army.values()) < 20:
+                    if abs(strong_now + ceil[figur]) <= strong * 1.1:
+                        self.army[figur] += 1
+                        strong_now += ceil[figur]
+                    else:
+                        while abs(strong - strong_now) > strong * 0.1:
+                            for i, figur1 in enumerate(figurs[:-1]):
+                                if abs(strong_now - ceil[figur1] + ceil[figurs[i + 1]]) <= strong * 1.2:
+                                    self.army[figur1] -= 1
+                                    self.army[figurs[i + 1]] += 1
+                                    strong_now += ceil[figurs[i + 1]] - ceil[figur1]
+                        break

@@ -1,7 +1,7 @@
 import pygame
 from sprites_images import images
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group, window_group, button_group
+    tyman_group2, system_group, window_group, button_group, info_group
 from constants import *
 
 
@@ -72,7 +72,7 @@ class Camera:
 
 class TimerAnim(pygame.sprite.Sprite):
     def __init__(self, columns, rows, x, y, sheet=images['таймер анимашка']):
-        super().__init__(window_group, all_sprites)
+        super().__init__(info_group, all_sprites)
         self.frames = []
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = 0

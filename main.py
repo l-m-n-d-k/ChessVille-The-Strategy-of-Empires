@@ -4,10 +4,12 @@ import os
 from classes_map import Map  # класс инициализации игры
 from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim, Pause  # курсор, камера, песочные часы по центру, пауза
 from classes_icons_and_select import PlayerIcon  # иконки игркоов
+from classes_windows import SmallWindow
 from classes_info import MiniMap, TableSteps  # миникарта, табличка информации об очках передвижения слева
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
     tyman_group2, system_group, info_group, button_group, window_group  # все группы спрайтов
 from constants import *  # константы
+import threading
 
 pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
@@ -135,6 +137,10 @@ def open_pause():
     print('Пауза')
 
 
+def create_SmallWindow(sprite, tile_x, tile_y):
+    SmallWindow(sprite, tile_x, tile_y)
+
+
 def main():
     global HOD, select_icon
     HOD = ''
@@ -183,6 +189,25 @@ def main():
             if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
                 event_mousemotion = event  # запоминаем для курсора на будущее
                 mimmap_game.update_select(event)  # затемняем кнопки, на которые навели мышью
+                tile_size = tile_width
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                # Нахождение координат клетки карты
+                tile_x = (mouse_x + camera.camera_x) // tile_size
+                tile_y = (mouse_y + camera.camera_y) // tile_size
+                if map_game.tyman1[tile_y][tile_x] == 0 and HOD == 'first' or \
+                        map_game.tyman2[tile_y][tile_x] == 0 and HOD == 'second':
+                    for sprite in players_group1:
+                        if sprite.rect.collidepoint(event.pos):
+                            tim = threading.Timer(2, create_SmallWindow, args=(sprite, tile_x, tile_y))  # Задержка в 5 секунд
+                            tim.start()
+                    for sprite in players_group2:
+                        if sprite.rect.collidepoint(event.pos):
+                            tim = threading.Timer(2, create_SmallWindow, args=(sprite, tile_x, tile_y))  # Задержка в 5 секунд
+                            tim.start()
+                    for sprite in neytral_group:
+                        if sprite.rect.collidepoint(event.pos):
+                            tim = threading.Timer(2, create_SmallWindow, args=(sprite, tile_x, tile_y))  # Задержка в 5 секунд
+                            tim.start()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 event_mousedown = event
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # нажатие левой кнопки мыши
@@ -207,7 +232,7 @@ def main():
                     table_parametrs.update_stats(HOD, select_icon)
                 else:  # если нажали с целью сделать ход
                     # Получение координат мыши
-                    tile_size = 100
+                    tile_size = tile_width
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     # Нахождение координат клетки карты
                     tile_x = (mouse_x + camera.camera_x) // tile_size
@@ -223,7 +248,8 @@ def main():
         camera.update_camera()  # проверяем, с краю ли мышка, надо ли двигать карту
         camera.update_targets()  # сдвигаем карту на текущее отклонение камеры
         system_group.update(event_mousemotion, event_mousedown)
-        all_sprites.update(event_mousemotion, event_mousedown)
+        window_group.update(camera, event_mousemotion)
+        #all_sprites.update(event_mousemotion, event_mousedown)
         table_parametrs.update_stats(HOD, select_icon)
         map_game.draw_map(screen, HOD)  # рисуем карту
         for icon in player_icon:  # рисуем рамки иконок
