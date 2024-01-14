@@ -181,8 +181,8 @@ def main():
                 game_running = False
             if event.type == pygame.KEYDOWN:  # реакция на esc
                 if event.key == pygame.K_ESCAPE:
-                    game_running = False
-                    # open_pause()
+                    # game_running = False
+                    open_pause()
             if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
                 event_mousemotion = event  # запоминаем для курсора на будущее
                 mimmap_game.update_select(event)  # затемняем кнопки, на которые навели мышью
