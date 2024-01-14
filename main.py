@@ -6,8 +6,9 @@ from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim, Pause
 from classes_icons_and_select import PlayerIcon  # иконки игркоов
 from classes_windows import SmallWindow
 from classes_info import MiniMap, TableSteps  # миникарта, табличка информации об очках передвижения слева
+from classes_stop_menu import Pause_fon
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group, info_group, button_group, window_group  # все группы спрайтов
+    tyman_group2, system_group, info_group, button_group, window_group, stop_menu_group  # все группы спрайтов
 from constants import *  # константы
 import threading
 
@@ -20,6 +21,10 @@ pygame.event.set_grab(True)  # мышка не уйдёт с окошка пай
 HOD = ''  # переменная текущего хода (пол механик на ней держится)
 select_icon = 0  # индекс выбранной иконки (тоже во многих механиках передаётся аргументом)
 font = pygame.font.Font(None, 36)  # шрифт для фпс
+
+def open_pause():
+    Pause_fon()
+
 
 
 def new_hod(player, camera):  # функция начала нового хода
@@ -144,6 +149,8 @@ def main():
     system_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     window_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     button_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
+    stop_menu_group.empty() # очищаем группу спрайтов (нужно при рестарте игры)
+    
 
     map_game = Map()    # создаём карту, создаём все спрайты согласно картам csv файлов
     mimmap_game = MiniMap(map_game)  # создаём миникарту на основе основной игровой карты
@@ -175,6 +182,7 @@ def main():
             if event.type == pygame.KEYDOWN:  # реакция на esc
                 if event.key == pygame.K_ESCAPE:
                     game_running = False
+                    # open_pause()
             if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
                 event_mousemotion = event  # запоминаем для курсора на будущее
                 mimmap_game.update_select(event)  # затемняем кнопки, на которые навели мышью

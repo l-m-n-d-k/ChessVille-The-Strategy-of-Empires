@@ -11,4 +11,4 @@ info_group = pygame.sprite.Group()  # миникарта, табличка с о
 button_group = pygame.sprite.Group()  # 2 круглых кнопки на миникарте, кнопка следующего хода
 window_group = pygame.sprite.Group()  # для всплывающих окошек (таких пока не было)
 system_group = pygame.sprite.Group()  # иконки и курсор
-menu_group = pygame.sprite.Group() # всплывающее меню
+stop_menu_group = pygame.sprite.Group() # всплывающее стоп-меню
