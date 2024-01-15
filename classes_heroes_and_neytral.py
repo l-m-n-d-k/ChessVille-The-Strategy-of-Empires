@@ -42,9 +42,9 @@ class Players1(pygame.sprite.Sprite):
 
     def update_steps(self):
         if self.tip in (2, 5):
-            self.steps = 36
+            self.steps = 226
         elif self.tip in (1, 3, 4, 6):
-            self.steps = 24
+            self.steps = 4
 
     def update_board(self, mapa):
         board = [[[None, '', '', '']] * map_width for _ in range(map_height)]
@@ -193,9 +193,9 @@ class Players2(pygame.sprite.Sprite):
 
     def update_steps(self):
         if self.tip in (2, 5):
-            self.steps = 36
+            self.steps = 6
         elif self.tip in (1, 3, 4, 6):
-            self.steps = 24
+            self.steps = 4
 
     def update_board(self, mapa):
         board = [[[None, '', '', '', '']] * map_width for _ in range(map_height)]
@@ -333,8 +333,8 @@ class Neytral(pygame.sprite.Sprite):
         rasst1 = min(abs(player.pos[0] - self.pos[0]) + abs(player.pos[1] - self.pos[1]) for player in players_group1)
         rasst2 = min(abs(player.pos[0] - self.pos[0]) + abs(player.pos[1] - self.pos[1]) for player in players_group2)
         rasst = min(rasst1, rasst2)
-        balans = {9: 7,
-                  16: 16,
+        balans = {12: 7,
+                  17: 16,
                   25: 32,
                   36: 50,
                   49: 70,
