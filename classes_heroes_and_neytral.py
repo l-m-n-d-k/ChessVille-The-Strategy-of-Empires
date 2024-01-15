@@ -30,6 +30,7 @@ class Players1(pygame.sprite.Sprite):
             self.army['Пешка'] = 4
         self.steps = 0
         self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
+        self.live = True
 
     def _define_rect(self):
         self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])
@@ -41,9 +42,9 @@ class Players1(pygame.sprite.Sprite):
 
     def update_steps(self):
         if self.tip in (2, 5):
-            self.steps = 6
+            self.steps = 36
         elif self.tip in (1, 3, 4, 6):
-            self.steps = 4
+            self.steps = 24
 
     def update_board(self, mapa):
         board = [[[None, '', '', '']] * map_width for _ in range(map_height)]
@@ -180,6 +181,7 @@ class Players2(pygame.sprite.Sprite):
             self.army['Пешка'] = 4
         self.steps = 0
         self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
+        self.live = True
 
     def _define_rect(self):
         self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])
@@ -191,9 +193,9 @@ class Players2(pygame.sprite.Sprite):
 
     def update_steps(self):
         if self.tip in (2, 5):
-            self.steps = 6
+            self.steps = 36
         elif self.tip in (1, 3, 4, 6):
-            self.steps = 4
+            self.steps = 24
 
     def update_board(self, mapa):
         board = [[[None, '', '', '', '']] * map_width for _ in range(map_height)]

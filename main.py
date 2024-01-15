@@ -4,11 +4,10 @@ import os
 from classes_map import Map  # класс инициализации игры
 from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim, Pause  # курсор, камера, песочные часы по центру, пауза
 from classes_icons_and_select import PlayerIcon  # иконки игркоов
-from classes_windows import SmallWindow
+from classes_windows import SmallWindow, LoseWindow
 from classes_info import MiniMap, TableSteps  # миникарта, табличка информации об очках передвижения слева
-from classes_stop_menu import Pause_fon
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group, info_group, button_group, window_group, stop_menu_group  # все группы спрайтов
+    tyman_group2, system_group, info_group, button_group, window_group  # все группы спрайтов
 from constants import *  # константы
 import threading
 
@@ -22,10 +21,6 @@ HOD = ''  # переменная текущего хода (пол механи�
 select_icon = 0  # индекс выбранной иконки (тоже во многих механиках передаётся аргументом)
 font = pygame.font.Font(None, 36)  # шрифт для фпс
 
-def open_pause():
-    Pause_fon()
-
-
 
 def new_hod(player, camera):  # функция начала нового хода
     global HOD, select_icon  # объявляем переменные глобальными, чтобы изменения распространялись на весь код
@@ -36,8 +31,15 @@ def new_hod(player, camera):  # функция начала нового ход�
         select_icon = 1  # назначаем выбранным героем центрального
         target = None  # переменная для текущего выбранного героя (центрального)
         for sprite in players_group1:
-            if sprite.tip == select_icon + 1:
+            if sprite.tip == select_icon + 1 and sprite.live is True:
                 target = sprite
+                break
+        else:
+            for sprite in sorted(players_group1.sprites(), key=lambda i: i.tip):
+                if sprite.live is True:
+                    target = sprite
+                    select_icon = sprite.tip - 1
+                    break
         camera.focus_target(target)  # фокусировка камеры на выбранном герое
     elif player == 'second':  # если ход передаётся второму игроку
         HOD = 'second'  # текущий ход - второй игрок
@@ -46,24 +48,46 @@ def new_hod(player, camera):  # функция начала нового ход�
         select_icon = 1  # назначаем выбранным героем центрального
         target = None  # переменная для текущего выбранного героя (центрального)
         for sprite in players_group2:
-            if sprite.tip == select_icon + 4:
+            if sprite.tip == select_icon + 4 and sprite.live is True:
                 target = sprite
+                break
+        else:
+            for sprite in sorted(players_group2.sprites(), key=lambda i: i.tip):
+                if sprite.live is True:
+                    target = sprite
+                    select_icon = sprite.tip - 4
+                    break
         camera.focus_target(target)  # фокусировка камеры на выбранном герое
 
 
-def update_icon(event, camera, HOD):  # обновление выбранной иконки героя, на вход событие нажатия левой кнопки мыши, камера и текущий ход
+def update_icon(event, camera, HOD, died=False):  # обновление выбранной иконки героя, на вход событие нажатия левой кнопки мыши, камера и текущий ход
     global select_icon  # объявляем переменную глобальной, чтобы изменения видел весь код
+    if died:
+        if HOD == 'first':  # если ход первого игрока
+            for sprite1 in sorted(players_group1.sprites(), key=lambda i: i.tip):
+                if sprite1.live is True:
+                    select_icon = sprite1.tip - 1
+                    camera.focus_target(sprite1)  # фокусируем камеру на игроке, которого выбрали через иконку
+                    break
+        elif HOD == 'second':  # если ход второго игрока
+            for sprite1 in sorted(players_group2.sprites(), key=lambda i: i.tip):
+                if sprite1.live is True:
+                    select_icon = sprite1.tip - 4
+                    camera.focus_target(sprite1)  # фокусируем камеру на игроке, которого выбрали через иконку
+                    break
+        return True
     for sprite in system_group:
         if isinstance(sprite, PlayerIcon) and sprite.rect.collidepoint(event.pos):  # если спрайт относится к классу иконок и на него нажали
-            select_icon = sprite.numb  # выбранным спрайтом объявляем спрайт, на который нажали
             if HOD == 'first':  # если ход первого игрока
                 for sprite1 in players_group1:
-                    if select_icon + 1 == sprite1.tip:
+                    if sprite.numb + 1 == sprite1.tip and sprite1.live is True:
                         camera.focus_target(sprite1)  # фокусируем камеру на игроке, которого выбрали через иконку
+                        select_icon = sprite.numb  # выбранным спрайтом объявляем спрайт, на который нажали
             elif HOD == 'second':  # если ход второго игрока
                 for sprite1 in players_group2:
-                    if select_icon + 4 == sprite1.tip:
+                    if sprite.numb + 4 == sprite1.tip and sprite1.live is True:
                         camera.focus_target(sprite1)  # фокусируем камеру на игроке, которого выбрали через иконку
+                        select_icon = sprite.numb  # выбранным спрайтом объявляем спрайт, на который нажали
             return True  # нажатие на иконку произошло, спрайты под иконкой трогать не надо
     return False  # нажатия на иконку не произошло, можно обрабатывать клик дальше
 
@@ -82,12 +106,23 @@ def move(player, hero, pos_x, pos_y, mapa):  # передвижение игро
             # звук "слишком далеко"
             return
         elif my_hero.board[pos_y][pos_x][2] in ['Нейтрал', 'Вражеский герой']:  # если в этой клетке враг
-            print(1)
-            ok = ...  # Окошко вопрос pyqt хочет ли игрок пройти войной
-            if ok:  # если хочет
-                chess_boy()  # начало шахматного боя
-            else:  # если передумал
-                return  # ничего не происходит, герой остаётся на месте
+            for sprite in neytral_group:
+                if sprite.pos == (pos_x, pos_y):
+                    enemy = sprite
+            for sprite in players_group2:
+                if sprite.pos == (pos_x, pos_y):
+                    enemy = sprite
+            my_hero_strong = sum(my_hero.army[key] * ceil[key] for key in my_hero.army)
+            enemy_strong = sum(enemy.army[key] * ceil[key] for key in enemy.army)
+            if my_hero_strong >= enemy_strong:
+                print('Я сильнее')
+                ...
+            else:
+                LoseWindow(my_hero)
+                mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0
+                my_hero.live = False
+                my_hero.steps = 0
+                my_hero.move(-map_width, -map_height, mapa)
         else:  # герой может пройти на клетку
             mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0  # убираем героя с прошлой позиции в классе карты игры
             mapa.players[pos_y][pos_x] = my_hero.tip  # ставим в новую позицию числовой тип героя (тот же номер, что и на картах csv)
@@ -113,11 +148,24 @@ def move(player, hero, pos_x, pos_y, mapa):  # передвижение игро
             # звук "слишком далеко"
             return
         elif my_hero.board[pos_y][pos_x][2] in ['Нейтрал', 'Вражеский герой']:
-            ok = ...  # Окошко вопрос pyqt хочет ли игрок пройти войной
-            if ok:  # если хочет
-                chess_boy()  # начало шахматного боя
-            else:  # если передумал
-                return  # ничего не происходит, герой остаётся на месте
+            for sprite in neytral_group:
+                if sprite.pos == (pos_x, pos_y):
+                    enemy = sprite
+            for sprite in players_group1:
+                if sprite.pos == (pos_x, pos_y):
+                    enemy = sprite
+            my_hero_strong = sum(my_hero.army[key] * ceil[key] for key in my_hero.army)
+            enemy_strong = sum(enemy.army[key] * ceil[key] for key in enemy.army)
+            if my_hero_strong >= enemy_strong:
+                print('Я сильнее')
+                ...
+            else:
+                LoseWindow(my_hero)
+                mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0
+                my_hero.live = False
+                my_hero.steps = 0
+                my_hero.pos = (-map_width, -map_height)
+
         else:  # герой может пройти на клетку
             mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0 # убираем героя с прошлой позиции в классе карты игры
             mapa.players[pos_y][pos_x] = my_hero.tip # ставим в новую позицию числовой тип героя (тот же номер, что и на картах csv)
@@ -149,8 +197,6 @@ def main():
     system_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     window_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     button_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
-    stop_menu_group.empty() # очищаем группу спрайтов (нужно при рестарте игры)
-    
 
     map_game = Map()    # создаём карту, создаём все спрайты согласно картам csv файлов
     mimmap_game = MiniMap(map_game)  # создаём миникарту на основе основной игровой карты
@@ -171,7 +217,7 @@ def main():
     player_icon = [PlayerIcon(position, i) for i, position in enumerate(player_icon_positions)]  # создаём иконки
 
     MyCursor()  # делаем свой курсор
-    event_mousemotion = event_mousedown = None
+    event_mousemotion = None
     pygame.mouse.set_visible(False)  # прячем стандартный курсор
     game_running = True
     while game_running:
@@ -181,33 +227,24 @@ def main():
                 game_running = False
             if event.type == pygame.KEYDOWN:  # реакция на esc
                 if event.key == pygame.K_ESCAPE:
-                    # game_running = False
-                    open_pause()
+                    game_running = False
             if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
                 event_mousemotion = event  # запоминаем для курсора на будущее
-                mimmap_game.update_select(event)  # затемняем кнопки, на которые навели мышью
-                tile_size = tile_width
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                # Нахождение координат клетки карты
-                tile_x = (mouse_x + camera.camera_x) // tile_size
-                tile_y = (mouse_y + camera.camera_y) // tile_size
-                if map_game.tyman1[tile_y][tile_x] == 0 and HOD == 'first' or \
-                        map_game.tyman2[tile_y][tile_x] == 0 and HOD == 'second':
-                    for sprite in players_group1:
-                        if sprite.rect.collidepoint(event.pos):
-                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
-                            tim.start()
-                    for sprite in players_group2:
-                        if sprite.rect.collidepoint(event.pos):
-                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
-                            tim.start()
-                    for sprite in neytral_group:
-                        if sprite.rect.collidepoint(event.pos):
-                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
-                            tim.start()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                event_mousedown = event
+            if event.type == timer_event:  # событие анимашки таймера
+                timer.update_value()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # нажатие левой кнопки мыши
+                f = 0
+                for sprite in window_group:
+                    if isinstance(sprite, LoseWindow):
+                        f = 1
+                        if sprite.button_ok.rect.collidepoint(event.pos):
+                            sprite.button_ok.kill()
+                            sprite.kill()
+                            update_icon(None, camera, HOD, True)
+                            mimmap_game.update(HOD, map_game)
+                            break
+                if f:
+                    break
                 if update_icon(event, camera, HOD) is True:  # если нажали на иконку
                     pass
                 elif pause.rect.collidepoint(event.pos):  # если нажали на паузу
@@ -239,17 +276,36 @@ def main():
                     mimmap_game.button_unit_wait.upgrade(HOD)
                     mimmap_game.update(HOD, map_game)
                     table_parametrs.update_stats(HOD, select_icon)
-            if event.type == timer_event:  # событие анимашки таймера
-                timer.update_value()
+            if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
+                mimmap_game.update_select(event)  # затемняем кнопки, на которые навели мышью
+                tile_size = tile_width
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                # Нахождение координат клетки карты
+                tile_x = (mouse_x + camera.camera_x) // tile_size
+                tile_y = (mouse_y + camera.camera_y) // tile_size
+                if map_game.tyman1[tile_y][tile_x] == 0 and HOD == 'first' or \
+                        map_game.tyman2[tile_y][tile_x] == 0 and HOD == 'second':
+                    for sprite in players_group1:
+                        if sprite.rect.collidepoint(event.pos):
+                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
+                            tim.start()
+                    for sprite in players_group2:
+                        if sprite.rect.collidepoint(event.pos):
+                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
+                            tim.start()
+                    for sprite in neytral_group:
+                        if sprite.rect.collidepoint(event.pos):
+                            tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
+                            tim.start()
 
         camera.update_camera()  # проверяем, с краю ли мышка, надо ли двигать карту
         camera.update_targets()  # сдвигаем карту на текущее отклонение камеры
-        system_group.update(event_mousemotion, event_mousedown)
+        system_group.update(event_mousemotion)
         window_group.update(camera, event_mousemotion)
         table_parametrs.update_stats(HOD, select_icon)
         map_game.draw_map(screen, HOD)  # рисуем карту
         for icon in player_icon:  # рисуем рамки иконок
-            icon.draw_base_rama(select_icon)
+            icon.draw_base_rama(HOD, select_icon)
         for icon in player_icon:
             icon.draw_select_rama(select_icon)
 

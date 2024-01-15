@@ -11,7 +11,7 @@ class SmallWindow(pygame.sprite.Sprite):
     def __init__(self, target, pos_x, pos_y, hod, position):
         pos = pygame.mouse.get_pos()
         if SmallWindow.next_counter > 0 or not pos == position:
-            del self
+            return
         else:
             SmallWindow.next_counter += 1
         super().__init__(window_group, all_sprites)
@@ -100,3 +100,64 @@ class SmallWindow(pygame.sprite.Sprite):
                 if not self.target.rect.collidepoint(elem.pos):
                     SmallWindow.next_counter -= 1
                     self.kill()
+
+
+class LoseWindow(pygame.sprite.Sprite):
+    def __init__(self, target):
+        super().__init__(window_group, all_sprites)
+        self.image = images['окошко поражения'].copy()
+        self.rect = self.image.get_rect(center=(width // 2, height // 2))
+        self.target = target
+
+        pawn = pygame.transform.scale(images['пешка белые'].copy(), (60, 60))
+        knight = pygame.transform.scale(images['конь белые'].copy(), (60, 60))
+        bishop = pygame.transform.scale(images['слон белые'].copy(), (60, 60))
+        rook = pygame.transform.scale(images['ладья белые'].copy(), (60, 60))
+        queen = pygame.transform.scale(images['ферзь белые'].copy(), (60, 60))
+        king = pygame.transform.scale(images['король белые'].copy(), (60, 60))
+        icon = pygame.transform.scale(images[f'иконка {target.tip - (3 if target.tip >= 4 else 0)}'].copy(), (60, 60))
+        self.button_ok = ButtuonOk(self)
+
+        font2 = pygame.font.Font(None, 25)
+
+        text_pawn = font2.render(str(target.army['Пешка']), True, (200, 200, 200))
+        text_knight = font2.render(str(target.army['Конь']), True, (200, 200, 200))
+        text_bishop = font2.render(str(target.army['Слон']), True, (200, 200, 200))
+        text_rook = font2.render(str(target.army['Ладья']), True, (200, 200, 200))
+        text_queen = font2.render(str(target.army['Ферзь']), True, (200, 200, 200))
+        text_king = font2.render(str(target.army['Король']), True, (200, 200, 200))
+
+        pawn.blit(text_pawn, (pawn.get_width() - text_pawn.get_width(), pawn.get_height() - text_pawn.get_height()))
+        knight.blit(text_knight,
+                    (knight.get_width() - text_knight.get_width(), knight.get_height() - text_knight.get_height()))
+        bishop.blit(text_bishop,
+                  (bishop.get_width() - text_bishop.get_width(), bishop.get_height() - text_bishop.get_height()))
+        rook.blit(text_rook, (rook.get_width() - text_rook.get_width(), rook.get_height() - text_rook.get_height()))
+        queen.blit(text_queen,
+                  (queen.get_width() - text_queen.get_width(), queen.get_height() - text_queen.get_height()))
+        king.blit(text_king, (king.get_width() - text_king.get_width(), king.get_height() - text_king.get_height()))
+
+        self.image.blit(icon, (80, 292))
+        self.image.blit(king, (167, 292))
+        self.image.blit(queen, (256, 292))
+        self.image.blit(rook, (344, 292))
+        self.image.blit(bishop, (434, 292))
+        self.image.blit(knight, (523, 292))
+        self.image.blit(pawn, (612, 292))
+
+
+    """def update(self, camera, *args):
+        for elem in args:
+            if isinstance(elem, pygame.event.Event) and elem.type == pygame.MOUSEMOTION:
+                if not self.target.rect.collidepoint(elem.pos):
+                    SmallWindow.next_counter -= 1
+                    self.kill()
+"""
+
+
+class ButtuonOk(pygame.sprite.Sprite):
+    def __init__(self, window):
+        super().__init__(window_group, all_sprites)
+        self.image = pygame.transform.scale(images['кнопка ок'].copy(), (125, 37))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (window.rect.x + 575, window.rect.y + 385)

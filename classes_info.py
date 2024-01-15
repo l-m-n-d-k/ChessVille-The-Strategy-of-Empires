@@ -144,7 +144,7 @@ class ButtonUnitWait(pygame.sprite.Sprite):
         if hod == 'first':
             if self.sost == 'wait':
                 for sprite in sorted(players_group1, key=lambda spr: spr.tip):
-                    if sprite.steps:
+                    if sprite.steps and sprite.live:
                         icon = sprite.tip - 1
                         hero = sprite
                         sost = 'юнит ждёт приказа'
@@ -165,7 +165,7 @@ class ButtonUnitWait(pygame.sprite.Sprite):
         elif hod == 'second':
             if self.sost == 'wait':
                 for sprite in sorted(players_group2, key=lambda spr: spr.tip):
-                    if sprite.steps:
+                    if sprite.steps and sprite.live:
                         icon = sprite.tip - 4
                         hero = sprite
                         sost = 'юнит ждёт приказа'
