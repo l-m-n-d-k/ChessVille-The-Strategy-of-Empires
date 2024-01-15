@@ -10,6 +10,7 @@ from groups_sprites import all_sprites, tiles_group, players_group1, players_gro
     tyman_group2, system_group, info_group, button_group, window_group  # все группы спрайтов
 from constants import *  # константы
 import threading
+from classes_stop_menu import Pause_fon
 
 pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
@@ -21,6 +22,8 @@ HOD = ''  # переменная текущего хода (пол механи�
 select_icon = 0  # индекс выбранной иконки (тоже во многих механиках передаётся аргументом)
 font = pygame.font.Font(None, 36)  # шрифт для фпс
 
+def open_pause():
+    Pause_fon()
 
 def new_hod(player, camera):  # функция начала нового хода
     global HOD, select_icon  # объявляем переменные глобальными, чтобы изменения распространялись на весь код
@@ -227,7 +230,8 @@ def main():
                 game_running = False
             if event.type == pygame.KEYDOWN:  # реакция на esc
                 if event.key == pygame.K_ESCAPE:
-                    game_running = False
+                    # game_running = False
+                    open_pause()
             if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
                 event_mousemotion = event  # запоминаем для курсора на будущее
             if event.type == timer_event:  # событие анимашки таймера
@@ -248,6 +252,7 @@ def main():
                 if update_icon(event, camera, HOD) is True:  # если нажали на иконку
                     pass
                 elif pause.rect.collidepoint(event.pos):  # если нажали на паузу
+                    # game_running = False
                     open_pause()
                 elif mimmap_game.button_stats.rect.collidepoint(event.pos):  # если нажали на кнопку подробных характеристик
                     pass
