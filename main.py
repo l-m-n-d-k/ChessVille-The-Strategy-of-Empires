@@ -24,7 +24,8 @@ font = pygame.font.Font(None, 36)  # шрифт для фпс
 
 def open_pause(event, game_running):
     Pause_fon()
-    Exit_button_pause(event, game_running)
+    exit = Exit_button_pause(event, game_running)
+    exit.to_main_menu()
 
 
 def new_hod(player, camera):  # функция начала нового хода
