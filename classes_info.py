@@ -205,7 +205,7 @@ class TableSteps(pygame.sprite.Sprite):
         steps = str(my_hero.steps)
         max_steps = str(6 if numb in (2, 5) else 4)
         strong = str(sum(my_hero.army[key] * ceil[key] for key in my_hero.army))
-        image = my_hero.image
+        image = my_hero.icon
 
         font = pygame.font.Font(None, 30)
         text1 = font.render(steps, True, (250, 250, 250))

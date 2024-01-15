@@ -54,10 +54,10 @@ class Camera:
             sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
                                                        tile_height * sprite.pos[1] - self.camera_y)
         for sprite in players_group1:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] + 6 - self.camera_x,
                                                        tile_height * sprite.pos[1] - self.camera_y)
         for sprite in players_group2:
-            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,
+            sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] + 6 - self.camera_x,
                                                        tile_height * sprite.pos[1] - self.camera_y)
         for sprite in neytral_group:
             sprite.rect = sprite.image.get_rect().move(tile_width * sprite.pos[0] - self.camera_x,

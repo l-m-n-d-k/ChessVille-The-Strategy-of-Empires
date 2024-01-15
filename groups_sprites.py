@@ -12,4 +12,4 @@ button_group = pygame.sprite.Group()  # 2 круглых кнопки на ми�
 window_group = pygame.sprite.Group()  # для всплывающих окошек (таких пока не было)
 system_group = pygame.sprite.Group()  # иконки и курсор
 menu_group = pygame.sprite.Group() # всплывающее меню
-stop_menu_group = pygame.sprite.Group() # стоп-меню
+stop_menu_group = pygame.sprite.Group()

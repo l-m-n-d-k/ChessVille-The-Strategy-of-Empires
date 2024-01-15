@@ -8,11 +8,15 @@ from constants import *
 class Players1(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(players_group1, all_sprites)
-        self.image = images[tile_type]
+        self.frames = []
+        self.cut_sheet(11 if tile_type != 2 else 9, 1, tile_type)
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
         self.pos = pos_x, pos_y
         self._define_rect()
         self.tip = tile_type
         self.name = names[self.tip]
+        self.icon = images[f'Герой {self.tip} иконка']
         self.army = {'Король': 1,
                      'Ферзь': 0,
                      'Ладья': 0,
@@ -32,8 +36,20 @@ class Players1(pygame.sprite.Sprite):
         self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
         self.live = True
 
+    def cut_sheet(self, columns, rows, tip):
+        sheet = images[f'Герой {tip}']
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns, sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames.append(sheet.subsurface(pygame.Rect(frame_location, self.rect.size)))
+
+    def update_value(self):
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.frames[self.cur_frame]
+
     def _define_rect(self):
-        self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])
+        self.rect.x, self.rect.y = ((tile_width * self.pos[0] + 30), tile_height * self.pos[1])
 
     def move(self, pos_x, pos_y, mapa):
         self.pos = pos_x, pos_y
@@ -42,7 +58,7 @@ class Players1(pygame.sprite.Sprite):
 
     def update_steps(self):
         if self.tip in (2, 5):
-            self.steps = 226
+            self.steps = 6
         elif self.tip in (1, 3, 4, 6):
             self.steps = 4
 
@@ -159,11 +175,15 @@ class Players1(pygame.sprite.Sprite):
 class Players2(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(players_group2, all_sprites)
-        self.image = images[tile_type]
+        self.frames = []
+        self.cut_sheet(11 if tile_type not in (2, 5) else 9, 1, tile_type)
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
         self.pos = pos_x, pos_y
         self._define_rect()
         self.tip = tile_type
         self.name = names[self.tip]
+        self.icon = images[f'Герой {self.tip} иконка']
         self.army = {'Король': 1,
                      'Ферзь': 0,
                      'Ладья': 0,
@@ -182,6 +202,18 @@ class Players2(pygame.sprite.Sprite):
         self.steps = 0
         self.board = [[None for _1 in range(map_width)] for _2 in range(map_height)]
         self.live = True
+
+    def cut_sheet(self, columns, rows, tip):
+        sheet = images[f'Герой {tip}']
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns, sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames.append(sheet.subsurface(pygame.Rect(frame_location, self.rect.size)))
+
+    def update_value(self):
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.frames[self.cur_frame]
 
     def _define_rect(self):
         self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])

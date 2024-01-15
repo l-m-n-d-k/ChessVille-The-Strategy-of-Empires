@@ -22,11 +22,11 @@ HOD = ''  # переменная текущего хода (пол механи�
 select_icon = 0  # индекс выбранной иконки (тоже во многих механиках передаётся аргументом)
 font = pygame.font.Font(None, 36)  # шрифт для фпс
 
+
 def open_pause(event, game_running):
     Pause_fon()
     exit = Exit_button_pause(event, game_running)
     exit.to_main_menu()
-
 
 def new_hod(player, camera):  # функция начала нового хода
     global HOD, select_icon  # объявляем переменные глобальными, чтобы изменения распространялись на весь код
@@ -209,7 +209,6 @@ def main():
     table_parametrs = TableSteps()  # добавляем табличку про очки перемещения
     timer = TimerAnim(7, 1, width // 2 - 30, height - 150)  # анимация таймера
     pause = Pause()  # кнопка паузы
-
     timer_event = pygame.USEREVENT + 1  # собственный ивент для анимации часов
     pygame.time.set_timer(timer_event, 285)
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)  # создание камеры
@@ -240,6 +239,13 @@ def main():
                 event_mousemotion = event  # запоминаем для курсора на будущее
             if event.type == timer_event:  # событие анимашки таймера
                 timer.update_value()
+                if HOD == 'first':
+                    for sprite in players_group1:
+                        sprite.update_value()
+                elif HOD == 'second':
+                    for sprite in players_group2:
+                        sprite.update_value()
+
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # нажатие левой кнопки мыши
                 f = 0
                 for sprite in window_group:
@@ -256,7 +262,6 @@ def main():
                 if update_icon(event, camera, HOD) is True:  # если нажали на иконку
                     pass
                 elif pause.rect.collidepoint(event.pos):  # если нажали на паузу
-                    # game_running = False
                     open_pause(event, game_running)
                 elif mimmap_game.button_stats.rect.collidepoint(event.pos):  # если нажали на кнопку подробных характеристик
                     pass
