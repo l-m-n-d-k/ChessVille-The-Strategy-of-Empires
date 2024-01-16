@@ -7,13 +7,14 @@ from classes_icons_and_select import PlayerIcon  # иконки игркоов
 from classes_windows import SmallWindow, LoseWindow
 from classes_info import MiniMap, TableSteps  # миникарта, табличка информации об очках передвижения слева
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
-    tyman_group2, system_group, info_group, button_group, window_group  # все группы спрайтов
+    tyman_group2, system_group, info_group, button_group, window_group, stop_menu_group  # все группы спрайтов
 from constants import *  # константы
 import threading
-from classes_stop_menu import Pause_fon, Exit_button_pause
+from classes_stop_menu import Pause_fon, Exit_button_pause, Return_to_game
 
 pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
+
 
 fps = 60
 clock = pygame.time.Clock()
@@ -22,11 +23,14 @@ HOD = ''  # переменная текущего хода (пол механи�
 select_icon = 0  # индекс выбранной иконки (тоже во многих механиках передаётся аргументом)
 font = pygame.font.Font(None, 36)  # шрифт для фпс
 
+def open_pause():
+    pause_fon.rect.center = (width / 2, height / 2 - 50)
+    exit_but.rect.center = (width / 2, height / 2 + 110)
+    return_to_game.rect.center = (width / 2, height / 2 - 90)
 
-def open_pause(event, game_running):
-    Pause_fon()
-    exit = Exit_button_pause(event, game_running)
-    exit.to_main_menu()
+def close_pause():
+    for sprite in stop_menu_group:
+        sprite.rect.center = (-1000, -1000)
 
 def new_hod(player, camera):  # функция начала нового хода
     global HOD, select_icon  # объявляем переменные глобальными, чтобы изменения распространялись на весь код
@@ -203,12 +207,21 @@ def main():
     system_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     window_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     button_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
+    stop_menu_group.empty() # очищаем группу спрайтов (нужно при рестарте игры)
+    
 
     map_game = Map()    # создаём карту, создаём все спрайты согласно картам csv файлов
     mimmap_game = MiniMap(map_game)  # создаём миникарту на основе основной игровой карты
     table_parametrs = TableSteps()  # добавляем табличку про очки перемещения
     timer = TimerAnim(7, 1, width // 2 - 30, height - 150)  # анимация таймера
+    
     pause = Pause()  # кнопка паузы
+    global pause_fon, exit_but, return_to_game
+    pause_fon = Pause_fon() 
+    exit_but = Exit_button_pause() # кнопка выхода
+    return_to_game = Return_to_game()
+    close_pause()
+
     timer_event = pygame.USEREVENT + 1  # собственный ивент для анимации часов
     pygame.time.set_timer(timer_event, 285)
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)  # создание камеры
@@ -234,7 +247,7 @@ def main():
             if event.type == pygame.KEYDOWN:  # реакция на esc
                 if event.key == pygame.K_ESCAPE:
                     # game_running = False
-                    open_pause(event, game_running)
+                    open_pause()
             if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
                 event_mousemotion = event  # запоминаем для курсора на будущее
             if event.type == timer_event:  # событие анимашки таймера
@@ -262,7 +275,11 @@ def main():
                 if update_icon(event, camera, HOD) is True:  # если нажали на иконку
                     pass
                 elif pause.rect.collidepoint(event.pos):  # если нажали на паузу
-                    open_pause(event, game_running)
+                    open_pause()
+                elif return_to_game.rect.collidepoint(event.pos):
+                    close_pause()                  
+                elif exit_but.rect.collidepoint(event.pos):
+                    game_running = False
                 elif mimmap_game.button_stats.rect.collidepoint(event.pos):  # если нажали на кнопку подробных характеристик
                     pass
                 elif mimmap_game.button_wait.rect.collidepoint(event.pos):  # нажатие на кнопку убрать очки перемещения
@@ -312,6 +329,7 @@ def main():
                             tim = threading.Timer(1.1, create_SmallWindow, args=(sprite, tile_x, tile_y, pygame.mouse.get_pos()))  # Задержка в 5 секунд
                             tim.start()
 
+        stop_menu_group.update()
         camera.update_camera()  # проверяем, с краю ли мышка, надо ли двигать карту
         camera.update_targets()  # сдвигаем карту на текущее отклонение камеры
         system_group.update(event_mousemotion)
