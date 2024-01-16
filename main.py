@@ -252,12 +252,12 @@ def main():
                 event_mousemotion = event  # запоминаем для курсора на будущее
             if event.type == timer_event:  # событие анимашки таймера
                 timer.update_value()
-                if HOD == 'first':
-                    for sprite in players_group1:
-                        sprite.update_value()
-                elif HOD == 'second':
-                    for sprite in players_group2:
-                        sprite.update_value()
+                for sprite in players_group1:
+                    sprite.update_value()
+                for sprite in players_group2:
+                    sprite.update_value()
+                for sprite in neytral_group:
+                    sprite.update_value()
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # нажатие левой кнопки мыши
                 f = 0
