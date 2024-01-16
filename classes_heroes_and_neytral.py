@@ -176,7 +176,7 @@ class Players2(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(players_group2, all_sprites)
         self.frames = []
-        self.cut_sheet(11 if tile_type not in (2, 5) else 9, 1, tile_type)
+        self.cut_sheet(11, 1, tile_type)
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.pos = pos_x, pos_y
@@ -341,7 +341,10 @@ class Players2(pygame.sprite.Sprite):
 class Neytral(pygame.sprite.Sprite):
     def __init__(self, tile_type, pos_x, pos_y):
         super().__init__(neytral_group, all_sprites)
-        self.image = images[tile_type]
+        self.frames = []
+        self.cut_sheet(7, 1, tile_type)
+        self.cur_frame = 0
+        self.image = self.frames[self.cur_frame]
         self.pos = pos_x, pos_y
         self._define_rect()
         self.tip = tile_type
@@ -353,6 +356,18 @@ class Neytral(pygame.sprite.Sprite):
                      'Слон': 0,
                      'Конь': 0,
                      'Пешка': 0}
+
+    def cut_sheet(self, columns, rows, tip):
+        sheet = images[f'Нейтральный юнит {tip}']
+        self.rect = pygame.Rect(0, 0, sheet.get_width() // columns, sheet.get_height() // rows)
+        for j in range(rows):
+            for i in range(columns):
+                frame_location = (self.rect.w * i, self.rect.h * j)
+                self.frames.append(pygame.transform.scale(sheet.subsurface(pygame.Rect(frame_location, self.rect.size)), (100, 100)))
+
+    def update_value(self):
+        self.cur_frame = (self.cur_frame + 1) % len(self.frames)
+        self.image = self.frames[self.cur_frame]
 
     def _define_rect(self):
         self.rect = self.image.get_rect().move(tile_width * self.pos[0], tile_height * self.pos[1])

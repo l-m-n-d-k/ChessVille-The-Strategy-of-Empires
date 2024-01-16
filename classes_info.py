@@ -212,7 +212,7 @@ class TableSteps(pygame.sprite.Sprite):
         text2 = font.render(max_steps, True, (250, 250, 250))
         text3 = font.render(strong, True, (250, 250, 250))
 
-        self.image.blit(pygame.transform.scale(image, (90, 90)), (10, 45))
+        self.image.blit(pygame.transform.scale(image, (80, 100)), (10, 35))
         self.image.blit(text1, (250, 72))
         self.image.blit(text2, (270, 72))
         self.image.blit(text3, (255, 97))

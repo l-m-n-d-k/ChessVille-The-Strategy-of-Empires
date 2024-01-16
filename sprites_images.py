@@ -21,12 +21,6 @@ def load_image(name, directory='Фото персонажей', colorkey=None):
 
 
 images = {
-    1: load_image('Разведчик.jpg', colorkey=-1),
-    2: load_image('Герой.jpg', colorkey=-1),
-    3: load_image('Разведчик.jpg', colorkey=-1),
-    4: load_image('Разведчик.jpg', colorkey=-1),
-    5: load_image('Герой.jpg', colorkey=-1),
-    6: load_image('Разведчик.jpg', colorkey=-1),
     7: pygame.transform.scale(load_image('Холм.png'), (100, 100)),
     8: pygame.transform.scale(load_image('Поле с речкой.png'), (100, 100)),
     9: pygame.transform.scale(load_image('Поле.png'), (100, 100)),
@@ -72,10 +66,12 @@ images = {
     'Герой 1 иконка': load_image("Герой 1 иконка.png"),
     'Герой 2 иконка': load_image("Герой 2 иконка.png"),
     'Герой 3 иконка': load_image("Герой 3 иконка.png"),
-    'Герой 4': load_image("Герой 1.png"),
-    'Герой 5': load_image("Герой 2.png"),
-    'Герой 6': load_image("Герой 3.png"),
-    'Герой 4 иконка': load_image("Герой 1 иконка.png"),
-    'Герой 5 иконка': load_image("Герой 2 иконка.png"),
-    'Герой 6 иконка': load_image("Герой 3 иконка.png"),
+    'Герой 4': load_image("Герой 4.png"),
+    'Герой 5': load_image("Герой 5.png"),
+    'Герой 6': load_image("Герой 6.png"),
+    'Герой 4 иконка': load_image("Герой 4 иконка.png"),
+    'Герой 5 иконка': load_image("Герой 5 иконка.png"),
+    'Герой 6 иконка': load_image("Герой 6 иконка.png"),
+    'Нейтральный юнит 12': load_image("Нейтральный юнит 12.png"),
+    'Нейтральный юнит 13': load_image("Нейтральный юнит 13.png"),
 }
