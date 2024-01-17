@@ -11,6 +11,7 @@ from groups_sprites import all_sprites, tiles_group, players_group1, players_gro
 from constants import *  # константы
 import threading
 from classes_stop_menu import Pause_fon, Exit_button_pause, Return_to_game
+from classes_music import Music
 
 pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
@@ -22,6 +23,7 @@ pygame.event.set_grab(True)  # мышка не уйдёт с окошка пай
 HOD = ''  # переменная текущего хода (пол механик на ней держится)
 select_icon = 0  # индекс выбранной иконки (тоже во многих механиках передаётся аргументом)
 font = pygame.font.Font(None, 36)  # шрифт для фпс
+Music()
 
 def open_pause():
     pause_fon.rect.center = (width / 2, height / 2 - 50)
