@@ -17,7 +17,7 @@ def convert_to_mp3(video_path, output_path='./'):
     return mp3_output_path
 
 # Пример использования
-youtube_url = 'https://youtu.be/oCXNBscuy0w?si=X-cY9m9k3VRYAEkA'
+youtube_url = 'https://youtu.be/kQIymU5GF_I?si=Rr-g3tcX9QUqmzA7'
 video_filename = download_video(youtube_url)
 mp3_filename = convert_to_mp3(video_filename)
 

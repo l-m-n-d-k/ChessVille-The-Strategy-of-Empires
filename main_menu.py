@@ -4,9 +4,11 @@ from classes_camera_cursor_pause_timer import MyCursor
 from groups_sprites import system_group
 from constants import *
 from main import *
+from classes_music import Music
 
 
 def main_menu(screen, fps, clock):
+    Music().in_menu()
     background_image = pygame.image.load('menu/fon.png')
     background_image = pygame.transform.scale(background_image, (screen.get_width(), screen.get_height()))
     menu_running = True

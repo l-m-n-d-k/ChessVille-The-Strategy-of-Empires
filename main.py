@@ -23,7 +23,6 @@ pygame.event.set_grab(True)  # мышка не уйдёт с окошка пай
 HOD = ''  # переменная текущего хода (пол механик на ней держится)
 select_icon = 0  # индекс выбранной иконки (тоже во многих механиках передаётся аргументом)
 font = pygame.font.Font(None, 36)  # шрифт для фпс
-Music()
 
 def open_pause():
     pause_fon.rect.center = (width / 2, height / 2 - 50)
@@ -197,6 +196,7 @@ def create_SmallWindow(sprite, tile_x, tile_y, pos):
 
 
 def main():
+    Music().in_game()
     global HOD, select_icon
     HOD = ''
     all_sprites.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
