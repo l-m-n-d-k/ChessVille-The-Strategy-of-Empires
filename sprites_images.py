@@ -74,4 +74,5 @@ images = {
     'Герой 6 иконка': load_image("Герой 6 иконка.png"),
     'Нейтральный юнит 12': load_image("Нейтральный юнит 12.png"),
     'Нейтральный юнит 13': load_image("Нейтральный юнит 13.png"),
+    'Место для таймера': pygame.transform.smoothscale(load_image("Место под таймер.png", directory='data'), (100, 60)),
 }

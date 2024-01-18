@@ -2,7 +2,7 @@ import sys
 import pygame
 import os
 from classes_map import Map  # класс инициализации игры
-from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim, Pause  # курсор, камера, песочные часы по центру, пауза
+from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim, Pause, Timer  # курсор, камера, песочные часы по центру, пауза
 from classes_icons_and_select import PlayerIcon  # иконки игркоов
 from classes_windows import SmallWindow, LoseWindow
 from classes_info import MiniMap, TableSteps  # миникарта, табличка информации об очках передвижения слева
@@ -34,8 +34,9 @@ def close_pause():
     for sprite in stop_menu_group:
         sprite.rect.center = (-1000, -1000)
 
-def new_hod(player, camera):  # функция начала нового хода
+def new_hod(player, camera, timer):  # функция начала нового хода
     global HOD, select_icon  # объявляем переменные глобальными, чтобы изменения распространялись на весь код
+    timer.restart_time()
     if player == 'first':  # если ход передаётся первому игроку
         HOD = 'first'  # текущий ход - первый игрок
         for sprite in players_group1:
@@ -210,24 +211,28 @@ def main():
     window_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     button_group.empty()  # очищаем группу спрайтов (нужно при рестарте игры)
     stop_menu_group.empty() # очищаем группу спрайтов (нужно при рестарте игры)
-    
 
     map_game = Map()    # создаём карту, создаём все спрайты согласно картам csv файлов
     mimmap_game = MiniMap(map_game)  # создаём миникарту на основе основной игровой карты
     table_parametrs = TableSteps()  # добавляем табличку про очки перемещения
     timer = TimerAnim(7, 1, width // 2 - 30, height - 150)  # анимация таймера
-    
     pause = Pause()  # кнопка паузы
+    timer_number = Timer()
+
     global pause_fon, exit_but, return_to_game
+
     pause_fon = Pause_fon() 
     exit_but = Exit_button_pause() # кнопка выхода
     return_to_game = Return_to_game()
     close_pause()
 
     timer_event = pygame.USEREVENT + 1  # собственный ивент для анимации часов
-    pygame.time.set_timer(timer_event, 285)
+    pygame.time.set_timer(timer_event, 1000)
+    anim_event = pygame.USEREVENT + 2
+    pygame.time.set_timer(anim_event, 285)
+
     camera = Camera(screen.get_width(), screen.get_height(), 30 * tile_width, 30 * tile_height)  # создание камеры
-    new_hod('first', camera)  # запускаем первый ход
+    new_hod('first', camera, timer_number)  # запускаем первый ход
     for sprite in players_group1:
         sprite.move(*sprite.pos, map_game)
     for sprite in players_group2:
@@ -252,7 +257,7 @@ def main():
                     open_pause()
             if event.type == pygame.MOUSEMOTION:  # реакция на движение мыши
                 event_mousemotion = event  # запоминаем для курсора на будущее
-            if event.type == timer_event:  # событие анимашки таймера
+            if event.type == anim_event:  # событие анимашки таймера
                 timer.update_value()
                 for sprite in players_group1:
                     sprite.update_value()
@@ -260,7 +265,12 @@ def main():
                     sprite.update_value()
                 for sprite in neytral_group:
                     sprite.update_value()
-
+            if event.type == timer_event:
+                result = timer_number.update_time()
+                if result is False:
+                    new_hod('first' if HOD == 'second' else 'second', camera, timer_number)
+                    mimmap_game.update(HOD, map_game)
+                    table_parametrs.update_stats(HOD, select_icon)
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # нажатие левой кнопки мыши
                 f = 0
                 for sprite in window_group:
@@ -294,7 +304,7 @@ def main():
                         select_icon = numb
                         camera.focus_target(sprite)
                     else:  # если было состояние следующий ход
-                        new_hod('first' if HOD == 'second' else 'second', camera)
+                        new_hod('first' if HOD == 'second' else 'second', camera, timer_number)
                         mimmap_game.update(HOD, map_game)
                     table_parametrs.update_stats(HOD, select_icon)
                 else:  # если нажали с целью сделать ход

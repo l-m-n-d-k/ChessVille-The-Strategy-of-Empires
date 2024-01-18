@@ -91,12 +91,32 @@ class TimerAnim(pygame.sprite.Sprite):
         self.image = self.frames[self.cur_frame]
 
 
-"""class Timer(pygame.sprite.Sprite):
+class Timer(pygame.sprite.Sprite):
     def __init__(self):
-        super().__init__(button_group, all_sprites)
-        self.image = images['кнопка характеристик']
+        super().__init__(info_group, all_sprites)
+        self.image = images['Место для таймера'].copy()
         self.rect = self.image.get_rect()
-        self.rect.topleft = (mimimapa.rect.x + 3, mimimapa.rect.y + 202)"""
+        self.rect.center = (width // 2, height - self.image.get_height() // 2 - 5)
+        self.timer = 70
+        self.render = pygame.font.Font(None, 28)
+        text = self.render.render(f'{self.timer // 60} м {self.timer % 60} с', True, (200, 200, 200))
+        self.image.blit(text, (self.image.get_width() // 2 - text.get_width() // 2, self.image.get_height() // 2 - text.get_height() // 2))
+
+    def update_time(self):
+        self.timer -= 1
+        if self.timer <= 0:
+            return False
+        else:
+            self.image = images['Место для таймера'].copy()
+            if self.timer >= 60:
+                text = self.render.render(f'{self.timer // 60} м {self.timer % 60} с', True, (200, 200, 200))
+            else:
+                text = self.render.render(f'{self.timer} с', True, (200, 200, 200))
+            self.image.blit(text, (self.image.get_width() // 2 - text.get_width() // 2, self.image.get_height() // 2 - text.get_height() // 2))
+            return True
+
+    def restart_time(self):
+        self.timer = 71
 
 
 class Pause(pygame.sprite.Sprite):
