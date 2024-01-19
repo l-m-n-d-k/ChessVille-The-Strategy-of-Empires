@@ -57,10 +57,11 @@ class Players1(pygame.sprite.Sprite):
         self.update_board(mapa)
 
     def update_steps(self):
-        if self.tip in (2, 5):
-            self.steps = 6
-        elif self.tip in (1, 3, 4, 6):
-            self.steps = 4
+        if self.live:
+            if self.tip in (2, 5):
+                self.steps = 6
+            elif self.tip in (1, 3, 4, 6):
+                self.steps = 4
 
     def update_board(self, mapa):
         board = [[[None, '', '', '']] * map_width for _ in range(map_height)]
@@ -224,10 +225,13 @@ class Players2(pygame.sprite.Sprite):
         self.update_board(mapa)
 
     def update_steps(self):
-        if self.tip in (2, 5):
-            self.steps = 6
-        elif self.tip in (1, 3, 4, 6):
-            self.steps = 4
+        if self.live:
+            if self.tip in (2, 5):
+                self.steps = 6
+            elif self.tip in (1, 3, 4, 6):
+                self.steps = 4
+        else:
+            self.steps = 0
 
     def update_board(self, mapa):
         board = [[[None, '', '', '', '']] * map_width for _ in range(map_height)]

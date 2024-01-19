@@ -9,6 +9,7 @@ from classes_info import MiniMap, TableSteps  # миникарта, таблич
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
     tyman_group2, system_group, info_group, button_group, window_group, stop_menu_group  # все группы спрайтов
 from constants import *  # константы
+from sprites_images import images
 import threading
 from classes_stop_menu import Pause_fon, Exit_button_pause, Return_to_game
 from classes_music import Music
@@ -178,6 +179,7 @@ def move(player, hero, pos_x, pos_y, mapa):  # передвижение игро
                 my_hero.steps = 0
                 my_hero.pos = (-map_width, -map_height)
 
+
         else:  # герой может пройти на клетку
             mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0 # убираем героя с прошлой позиции в классе карты игры
             mapa.players[pos_y][pos_x] = my_hero.tip # ставим в новую позицию числовой тип героя (тот же номер, что и на картах csv)
@@ -271,6 +273,8 @@ def main():
                     new_hod('first' if HOD == 'second' else 'second', camera, timer_number)
                     mimmap_game.update(HOD, map_game)
                     table_parametrs.update_stats(HOD, select_icon)
+                    mimmap_game.button_unit_wait.image = images['кнопка юнит ждёт']
+                    mimmap_game.button_unit_wait.sost = 'wait'
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # нажатие левой кнопки мыши
                 f = 0
                 for sprite in window_group:
