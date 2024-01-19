@@ -21,7 +21,7 @@ class PlayerIcon(pygame.sprite.Sprite):
         if hod == 'first':
             for sprite in players_group1:
                 if sprite.tip == self.numb + 1 and sprite.live is False and self.tip == 'без креста':
-                    pygame.draw.rect(self.image, (100, 100, 100), (0, 90, 100, 10))
+                    pygame.draw.rect(self.image, (100, 100, 100), (0, 88, 100, 12))
                     image = pygame.transform.scale(images['красный крест'].copy(), (90, 90))
                     self.image.blit(image, (5, 5))
                     self.tip = 'с крестом'
@@ -38,7 +38,7 @@ class PlayerIcon(pygame.sprite.Sprite):
         elif hod == 'second':
             for sprite in players_group2:
                 if sprite.tip == self.numb + 4 and sprite.live is False and self.tip == 'без креста':
-                    pygame.draw.rect(self.image, (100, 100, 100), (0, 90, 100, 10))
+                    pygame.draw.rect(self.image, (100, 100, 100), (0, 88, 100, 12))
                     image = pygame.transform.scale(images['красный крест'].copy(), (90, 90))
                     self.image.blit(image, (5, 5))
                     self.tip = 'с крестом'
