@@ -37,7 +37,13 @@ def main_menu(screen, fps, clock):
                 menu_running = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if start_button.collidepoint(event.pos):
-                    main()  # Завершение меню и начало игры
+                    result = main()  # Завершение меню и начало игры
+                    if result == 'first win':
+                        print('Выиграл первый игрок')
+                    elif result == 'second win':
+                        print('Выиграл второй игрок')
+                    elif result is None:
+                        print('Пользователь вышел через паузу')
                     system_group.empty()
                     MyCursor()
                 elif exit_button.collidepoint(event.pos):

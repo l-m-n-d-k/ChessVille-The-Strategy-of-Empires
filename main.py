@@ -136,6 +136,7 @@ def move(player, hero, pos_x, pos_y, mapa):  # передвижение игро
                 my_hero.live = False
                 my_hero.steps = 0
                 my_hero.move(-map_width, -map_height, mapa)
+
         else:  # герой может пройти на клетку
             mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0  # убираем героя с прошлой позиции в классе карты игры
             mapa.players[pos_y][pos_x] = my_hero.tip  # ставим в новую позицию числовой тип героя (тот же номер, что и на картах csv)
@@ -285,6 +286,12 @@ def main():
                             sprite.kill()
                             update_icon(None, camera, HOD, True)
                             mimmap_game.update(HOD, map_game)
+                            if HOD == 'first':
+                                if all(spritik.live is False for spritik in players_group1):
+                                    return 'second win'
+                            elif HOD == 'second':
+                                if all(spritik.live is False for spritik in players_group2):
+                                    return 'first win'
                             break
                 if f:
                     break
@@ -320,6 +327,7 @@ def main():
                     tile_y = (mouse_y + camera.camera_y) // tile_size
 
                     move(HOD, select_icon, tile_x, tile_y, map_game)  # перемещаемся героем выбранным
+
                     mimmap_game.button_unit_wait.upgrade(HOD)
                     mimmap_game.update(HOD, map_game)
                     table_parametrs.update_stats(HOD, select_icon)
