@@ -42,48 +42,48 @@ class MiniMap(pygame.sprite.Sprite):
             for x in range(map_width):
                 if HOD == 'first':
                     if self.fon[y][x] == 7:
-                        pygame.draw.rect(self.image, (10, 69, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (0, 148, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 9:
-                        pygame.draw.rect(self.image, (0, 153, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (0, 110, 52), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 8:
-                        pygame.draw.rect(self.image, (0, 103, 126), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (93, 118, 203), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 10:
-                        pygame.draw.rect(self.image, (100, 107, 99), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (71, 69, 60), (x * self.side + 80, y * self.side + 8, self.side, self.side))
 
                     if self.tyman1[y][x] != 0:
-                        pygame.draw.rect(self.image, (200, 200, 200), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (180, 180, 180), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                         continue
                     if self.players[y][x] in (1, 2, 3):
-                        pygame.draw.circle(self.image, (83, 55, 122), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
+                        pygame.draw.circle(self.image, (244, 200, 0), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.players[y][x] in (4, 5, 6):
-                        pygame.draw.circle(self.image, (175, 43, 30), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
+                        pygame.draw.circle(self.image, (195, 43, 30), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.neytral[y][x]:
-                        pygame.draw.circle(self.image, (236, 124, 38), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
+                        pygame.draw.circle(self.image, (32, 33, 79), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
 
                 elif HOD == 'second':
                     if self.fon[y][x] == 7:
-                        pygame.draw.rect(self.image, (10, 69, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (0, 148, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 9:
-                        pygame.draw.rect(self.image, (0, 153, 0), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (0, 110, 52), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 8:
-                        pygame.draw.rect(self.image, (0, 103, 126), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (93, 118, 203), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                     elif self.fon[y][x] == 10:
-                        pygame.draw.rect(self.image, (100, 107, 99), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (71, 69, 60), (x * self.side + 80, y * self.side + 8, self.side, self.side))
 
                     if self.tyman2[y][x] != 0:
-                        pygame.draw.rect(self.image, (200, 200, 200), (x * self.side + 80, y * self.side + 8, self.side, self.side))
+                        pygame.draw.rect(self.image, (180, 180, 180), (x * self.side + 80, y * self.side + 8, self.side, self.side))
                         continue
                     if self.players[y][x] in (4, 5, 6):
-                        pygame.draw.circle(self.image, (83, 55, 122), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
+                        pygame.draw.circle(self.image, (244, 200, 0), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.players[y][x] in (1, 2, 3):
-                        pygame.draw.circle(self.image, (175, 43, 30), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
+                        pygame.draw.circle(self.image, (195, 43, 30), (x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
                     if self.neytral[y][x]:
-                        pygame.draw.circle(self.image, (236, 124, 38),(x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
+                        pygame.draw.circle(self.image, (32, 33, 79),(x * self.side + 80 + self.side // 2, y * self.side + 8 + self.side // 2), self.side // 2)
                         continue
 
     def update_select(self, event):
