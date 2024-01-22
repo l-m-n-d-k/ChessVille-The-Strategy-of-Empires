@@ -116,7 +116,7 @@ class LoseWindow(pygame.sprite.Sprite):
         queen = pygame.transform.scale(images['ферзь белые'].copy(), (60, 60))
         king = pygame.transform.scale(images['король белые'].copy(), (60, 60))
         icon = pygame.transform.scale(images[f'иконка {target.tip - (3 if target.tip >= 4 else 0)}'].copy(), (60, 60))
-        self.button_ok = ButtuonOk(self)
+        self.button_ok = ButtuonOk(self, dx=575, dy=385, x=125, y=37)
 
         font2 = pygame.font.Font(None, 25)
 
@@ -146,18 +146,86 @@ class LoseWindow(pygame.sprite.Sprite):
         self.image.blit(pawn, (612, 292))
 
 
-    """def update(self, camera, *args):
-        for elem in args:
-            if isinstance(elem, pygame.event.Event) and elem.type == pygame.MOUSEMOTION:
-                if not self.target.rect.collidepoint(elem.pos):
-                    SmallWindow.next_counter -= 1
-                    self.kill()
-"""
+class WinWindow(pygame.sprite.Sprite):
+    def __init__(self, my_hero, target):
+        super().__init__(window_group, all_sprites)
+        self.image = images['окошко победы'].copy()
+        self.rect = self.image.get_rect(center=(width // 2, height // 2))
+
+        icon_white = pygame.transform.scale(my_hero.icon.copy(), (50, 50))
+        self.image.blit(icon_white, (70, 243))
+        icon_black = pygame.transform.scale(target.icon.copy(), (50, 50))
+        self.image.blit(icon_black, (70, 348))
+
+        self.pawn_white = IconChessFigure(self.rect, 'пешка белые', my_hero.army['Пешка'], 508, 243)
+        self.knight_white = IconChessFigure(self.rect, 'конь белые', my_hero.army['Конь'], 434, 243)
+        self.bishop_white = IconChessFigure(self.rect, 'слон белые', my_hero.army['Слон'], 361, 243)
+        self.rook_white = IconChessFigure(self.rect, 'ладья белые', my_hero.army['Ладья'], 285, 243)
+        self.queen_white = IconChessFigure(self.rect, 'ферзь белые', my_hero.army['Ферзь'], 212, 243)
+        self.king_white = IconChessFigure(self.rect, 'король белые', my_hero.army['Король'], 142, 243)
+        self.icons_white = [self.pawn_white, self.knight_white, self.bishop_white, self.rook_white, self.queen_white,
+                            self.king_white]
+
+        self.pawn_black = IconChessFigure(self.rect, 'пешка чёрные', target.army['Пешка'], 508, 348)
+        self.knight_black = IconChessFigure(self.rect, 'конь чёрные', target.army['Конь'], 434, 348)
+        self.bishop_black = IconChessFigure(self.rect, 'слон чёрные', target.army['Слон'], 361, 348)
+        self.rook_black = IconChessFigure(self.rect, 'ладья чёрные', target.army['Ладья'], 285, 348)
+        self.queen_black = IconChessFigure(self.rect, 'ферзь чёрные', target.army['Ферзь'], 212, 348)
+        self.king_black = IconChessFigure(self.rect, 'король чёрные', target.army['Король'], 142, 348)
+        self.icons_black = [self.pawn_black, self.knight_black, self.bishop_black, self.rook_black, self.queen_black,
+                            self.king_black]
+
+        self.button_ok = ButtuonOk(self, dx=470, dy=430, x=100, y=30)
+        #self.button_del = ButtonDelete(self, dx=55, dy=425, x=140, y=38)
 
 
 class ButtuonOk(pygame.sprite.Sprite):
-    def __init__(self, window):
+    def __init__(self, window, dx, dy, x, y):
         super().__init__(window_group, all_sprites)
-        self.image = pygame.transform.scale(images['кнопка ок'].copy(), (125, 37))
+        self.image = pygame.transform.scale(images['кнопка ок'].copy(), (x, y))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (window.rect.x + 575, window.rect.y + 385)
+        self.rect.topleft = (window.rect.x + dx, window.rect.y + dy)
+
+
+class ButtonDelete(pygame.sprite.Sprite):
+    def __init__(self, window, dx, dy, x, y):
+        super().__init__(window_group, all_sprites)
+        self.image = pygame.transform.scale(images['кнопка удалить'].copy(), (x, y))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (window.rect.x + dx, window.rect.y + dy)
+
+
+class IconChessFigure(pygame.sprite.Sprite):
+    def __init__(self, parent_rect, name_image, count_unit, dx, dy):
+        super().__init__(window_group, all_sprites)
+        self.reserve = pygame.transform.scale(images[name_image].copy(), (50, 50))
+        self.image = self.reserve.copy()
+        font = pygame.font.Font(None, 25)
+        if count_unit is None:
+            self.can_moving = False
+        else:
+            text_figure = font.render(str(count_unit), True, (200, 200, 200))
+            self.image.blit(text_figure, (self.image.get_width() - text_figure.get_width(), self.image.get_height() - text_figure.get_height()))
+        self.rect = self.image.get_rect(topleft=(parent_rect[0] + dx, parent_rect[1] + dy))
+        self.moving = False
+        self.start_coords = self.rect.copy()
+        self.start_coords_mouse = 0, 0
+
+    def update_move(self, *args):
+        for elem in args:
+            if isinstance(elem, pygame.event.Event) and elem.type == pygame.MOUSEBUTTONDOWN:
+                if self.rect.collidepoint(elem.pos):
+                    self.moving = True
+                    self.start_coords_mouse = elem.pos
+            elif isinstance(elem, pygame.event.Event) and elem.type == pygame.MOUSEBUTTONUP:
+                self.moving = False
+
+        if self.moving:
+            mouse = pygame.mouse.get_pos()
+            self.rect = self.image.get_rect().move(self.start_coords[0] + mouse[0] - self.start_coords_mouse[0],
+                                 self.start_coords[1] + mouse[1] - self.start_coords_mouse[1])
+        else:
+            self.rect = self.start_coords
+
+
+

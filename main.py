@@ -4,7 +4,7 @@ import os
 from classes_map import Map  # класс инициализации игры
 from classes_camera_cursor_pause_timer import MyCursor, Camera, TimerAnim, Pause, Timer  # курсор, камера, песочные часы по центру, пауза
 from classes_icons_and_select import PlayerIcon  # иконки игркоов
-from classes_windows import SmallWindow, LoseWindow
+from classes_windows import SmallWindow, LoseWindow, WinWindow
 from classes_info import MiniMap, TableSteps  # миникарта, табличка информации об очках передвижения слева
 from groups_sprites import all_sprites, tiles_group, players_group1, players_group2, neytral_group, tyman_group1, \
     tyman_group2, system_group, info_group, button_group, window_group, stop_menu_group  # все группы спрайтов
@@ -128,8 +128,27 @@ def move(player, hero, pos_x, pos_y, mapa):  # передвижение игро
             my_hero_strong = sum(my_hero.army[key] * ceil[key] for key in my_hero.army)
             enemy_strong = sum(enemy.army[key] * ceil[key] for key in enemy.army)
             if my_hero_strong >= enemy_strong:
-                print('Я сильнее')
-                ...
+                mapa.neytral[enemy.pos[1]][enemy.pos[0]] = 0
+                enemy.kill()
+                mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0  # убираем героя с прошлой позиции в классе карты игры
+                mapa.players[pos_y][
+                    pos_x] = my_hero.tip  # ставим в новую позицию числовой тип героя (тот же номер, что и на картах csv)
+
+                vision = 4 if my_hero.tip in (1, 3) else 3  # в зависимости от типа 3 или 4 клетки обзора
+                for sprite in tyman_group1:  # проходимся по туману войны
+                    if abs(sprite.pos[0] - pos_x) <= vision and abs(sprite.pos[1] - pos_y) <= vision:
+                        mapa.tyman1[sprite.pos[1]][sprite.pos[0]] = 0  # удаляем туман из класса карты, если он близко
+                        sprite.kill()
+                my_hero.steps -= my_hero.board[pos_y][pos_x][0]
+                my_hero.move(pos_x, pos_y, mapa)
+                enemy.kill()
+                WinWindow(my_hero, enemy)
+                for figure in ['Пешка', 'Конь', 'Слон', 'Ладья', 'Ферзь']:
+                    my_hero.army[figure] += enemy.army[figure]
+                if sum(my_hero.army.values()) > 20:
+                    for figure in ['Пешка', 'Конь', 'Слон', 'Ладья', 'Ферзь']:
+                        while my_hero.army[figure] and sum(my_hero.army.values()) > 20:
+                            my_hero.army[figure] -= 1
             else:
                 LoseWindow(my_hero)
                 mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0
@@ -171,8 +190,26 @@ def move(player, hero, pos_x, pos_y, mapa):  # передвижение игро
             my_hero_strong = sum(my_hero.army[key] * ceil[key] for key in my_hero.army)
             enemy_strong = sum(enemy.army[key] * ceil[key] for key in enemy.army)
             if my_hero_strong >= enemy_strong:
-                print('Я сильнее')
-                ...
+                mapa.neytral[enemy.pos[1]][enemy.pos[0]] = 0
+                enemy.kill()
+                mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0  # убираем героя с прошлой позиции в классе карты игры
+                mapa.players[pos_y][
+                    pos_x] = my_hero.tip  # ставим в новую позицию числовой тип героя (тот же номер, что и на картах csv)
+
+                vision = 4 if my_hero.tip in (4, 6) else 3  # в зависимости от типа 3 или 4 клетки обзора
+                for sprite in tyman_group2:  # проходимся по туману войны
+                    if abs(sprite.pos[0] - pos_x) <= vision and abs(sprite.pos[1] - pos_y) <= vision:
+                        mapa.tyman2[sprite.pos[1]][sprite.pos[0]] = 0  # удаляем туман из класса карты, если он близко
+                        sprite.kill()
+                my_hero.steps -= my_hero.board[pos_y][pos_x][0]
+                my_hero.move(pos_x, pos_y, mapa)
+                WinWindow(my_hero, enemy)
+                for figure in ['Пешка', 'Конь', 'Слон', 'Ладья', 'Ферзь']:
+                    my_hero.army[figure] += enemy.army[figure]
+                if sum(my_hero.army.values()) > 20:
+                    for figure in ['Пешка', 'Конь', 'Слон', 'Ладья', 'Ферзь']:
+                        while my_hero.army[figure] and sum(my_hero.army.values()) > 20:
+                            my_hero.army[figure] -= 1
             else:
                 LoseWindow(my_hero)
                 mapa.players[my_hero.pos[1]][my_hero.pos[0]] = 0
@@ -292,6 +329,20 @@ def main():
                             elif HOD == 'second':
                                 if all(spritik.live is False for spritik in players_group2):
                                     return 'first win'
+                            break
+                    if isinstance(sprite, WinWindow):
+                        f = 1
+                        if sprite.button_ok.rect.collidepoint(event.pos):
+                            sprite.button_ok.kill()
+                            for iconka_chess in sprite.icons_white:
+                                iconka_chess.kill()
+                            for iconka_chess in sprite.icons_black:
+                                iconka_chess.kill()
+                            sprite.kill()
+
+                            mimmap_game.button_unit_wait.upgrade(HOD)
+                            mimmap_game.update(HOD, map_game)
+                            table_parametrs.update_stats(HOD, select_icon)
                             break
                 if f:
                     break

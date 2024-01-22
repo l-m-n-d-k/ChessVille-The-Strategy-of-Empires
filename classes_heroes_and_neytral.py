@@ -1,3 +1,5 @@
+import random
+
 import pygame
 from copy import deepcopy
 from groups_sprites import players_group1, players_group2, neytral_group, all_sprites
@@ -353,6 +355,7 @@ class Neytral(pygame.sprite.Sprite):
         self._define_rect()
         self.tip = tile_type
         self.name = names[self.tip]
+        self.icon = self.frames[0].copy()
         self.steps = 0
         self.army = {'Король': 1,
                      'Ферзь': 0,
@@ -385,9 +388,9 @@ class Neytral(pygame.sprite.Sprite):
         rasst2 = min(abs(player.pos[0] - self.pos[0]) + abs(player.pos[1] - self.pos[1]) for player in players_group2)
         rasst = min(rasst1, rasst2)
         balans = {12: 7,
-                  17: 16,
-                  25: 32,
-                  36: 50,
+                  17: 15,
+                  24: 36,
+                  36: 58,
                   49: 70,
                   64: 95,
                   81: 110,
@@ -412,3 +415,10 @@ class Neytral(pygame.sprite.Sprite):
                                     self.army[figurs[i + 1]] += 1
                                     strong_now += ceil[figurs[i + 1]] - ceil[figur1]
                         break
+        while True:
+            figur = random.choice(figurs)
+            if self.army[figur] >= 1:
+                self.army[figur] -= 1
+                self.army[random.choice(figurs)] += 1
+                break
+

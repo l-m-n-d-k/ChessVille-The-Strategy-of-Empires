@@ -97,7 +97,7 @@ class Timer(pygame.sprite.Sprite):
         self.image = images['Место для таймера'].copy()
         self.rect = self.image.get_rect()
         self.rect.center = (width // 2, height - self.image.get_height() // 2 - 5)
-        self.timer = 70
+        self.timer = 90
         self.render = pygame.font.Font(None, 28)
         text = self.render.render(f'{self.timer // 60} м {self.timer % 60} с', True, (200, 200, 200))
         self.image.blit(text, (self.image.get_width() // 2 - text.get_width() // 2, self.image.get_height() // 2 - text.get_height() // 2))
@@ -116,7 +116,7 @@ class Timer(pygame.sprite.Sprite):
             return True
 
     def restart_time(self):
-        self.timer = 71
+        self.timer = 91
 
 
 class Pause(pygame.sprite.Sprite):

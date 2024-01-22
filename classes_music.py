@@ -6,7 +6,7 @@ class Music():
 
     def in_game(self):
         pygame.mixer.music.load('music/Pirate Ship (Acoustic).mp3')
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0)
         pygame.mixer.music.play(-1)
 
     def in_menu(self):
