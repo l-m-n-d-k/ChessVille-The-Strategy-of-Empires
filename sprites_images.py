@@ -9,7 +9,7 @@ def load_image(name, directory='Фото персонажей', colorkey=None):
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
-    image = pygame.image.load(fullname)
+    image = pygame.image.load(fullname).convert_alpha()
     if colorkey is not None:
         image = image.convert()
         if colorkey == -1:

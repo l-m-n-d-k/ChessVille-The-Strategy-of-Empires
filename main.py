@@ -18,7 +18,7 @@ pygame.init()
 pygame.display.set_caption("ChessVille: The Strategy of Empires")
 
 
-fps = 60
+fps = 100
 clock = pygame.time.Clock()
 pygame.event.set_grab(True)  # мышка не уйдёт с окошка пайгейм
 HOD = ''  # переменная текущего хода (пол механик на ней держится)

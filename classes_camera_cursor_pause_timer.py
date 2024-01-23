@@ -18,7 +18,7 @@ class MyCursor(pygame.sprite.Sprite):
         for ev in args:
             if isinstance(ev, pygame.event.Event) and ev.type == pygame.MOUSEMOTION:
                 self.rect.topleft = ev.pos
-                pygame.draw.rect(self.image, 'red', [0, 0, 50, 47], 2)
+                # pygame.draw.rect(self.image, 'red', [0, 0, 50, 47], 2)
 
 
 class Camera:
@@ -100,7 +100,8 @@ class Timer(pygame.sprite.Sprite):
         self.timer = 90
         self.render = pygame.font.Font(None, 28)
         text = self.render.render(f'{self.timer // 60} м {self.timer % 60} с', True, (200, 200, 200))
-        self.image.blit(text, (self.image.get_width() // 2 - text.get_width() // 2, self.image.get_height() // 2 - text.get_height() // 2))
+        self.image.blit(text, (
+        self.image.get_width() // 2 - text.get_width() // 2, self.image.get_height() // 2 - text.get_height() // 2))
 
     def update_time(self):
         self.timer -= 1
@@ -112,7 +113,8 @@ class Timer(pygame.sprite.Sprite):
                 text = self.render.render(f'{self.timer // 60} м {self.timer % 60} с', True, (200, 200, 200))
             else:
                 text = self.render.render(f'{self.timer} с', True, (200, 200, 200))
-            self.image.blit(text, (self.image.get_width() // 2 - text.get_width() // 2, self.image.get_height() // 2 - text.get_height() // 2))
+            self.image.blit(text, (
+            self.image.get_width() // 2 - text.get_width() // 2, self.image.get_height() // 2 - text.get_height() // 2))
             return True
 
     def restart_time(self):
